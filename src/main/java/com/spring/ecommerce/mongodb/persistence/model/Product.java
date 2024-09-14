@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Document(collection = "product")
 @Getter
@@ -71,6 +70,8 @@ public class Product {
     @JsonProperty("sellingTypes")
     private String sellingTypes;
 
+    @DocumentReference
+    private List<ProductVariants> variants ;
 
     @JsonIgnore
     private LocalDateTime createdAt;
@@ -97,5 +98,6 @@ public class Product {
         this.sellingTypes = sellingTypes;
         this.categories = items;
         this.dimensions = dimensions;
+       // this.variants = variants;
     }
 }
