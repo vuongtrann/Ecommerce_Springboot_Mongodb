@@ -1,6 +1,7 @@
 package com.spring.ecommerce.mongodb.services.Impl;
 
 import com.spring.ecommerce.mongodb.persistence.dto.CategoryForm;
+import com.spring.ecommerce.mongodb.persistence.model.Banners;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
 import com.spring.ecommerce.mongodb.repository.CategoryRepository;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
@@ -14,7 +15,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class CategoryServicesImpl implements CategoryServices {
+
     private final CategoryRepository categoryRepository;
+
+    @Autowired
+    private BannerServiceImpl  bannerService;
 
     @Override
     public List<Category> findAll() {
@@ -28,6 +33,12 @@ public class CategoryServicesImpl implements CategoryServices {
 
     @Override
     public Category save(Category category) {
+        category.setCreatedAt(LocalDateTime.now());
+        if (category.getBanner()!=null) {
+           Banners banners=  bannerService.findById(category.getBanner().getId())
+                   .orElseThrow(() -> new RuntimeException("Banner not found"));
+           category.setBanner(banners);
+        }
         return categoryRepository.save(category);
     }
 

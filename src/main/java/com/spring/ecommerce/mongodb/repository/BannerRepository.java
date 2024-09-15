@@ -1,7 +1,7 @@
 package com.spring.ecommerce.mongodb.repository;
 
-import org.springframework.boot.Banner;
+import com.spring.ecommerce.mongodb.persistence.model.Banners;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface BannerRepository extends MongoRepository<Banner, String> {
+public interface BannerRepository extends MongoRepository<Banners, String> {
 }

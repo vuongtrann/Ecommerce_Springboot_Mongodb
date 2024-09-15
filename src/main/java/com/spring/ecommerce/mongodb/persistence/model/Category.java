@@ -3,6 +3,7 @@ package com.spring.ecommerce.mongodb.persistence.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.springframework.boot.Banner;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class Category {
     @Id
+    @Generated
     @JsonProperty("id")
     private String id;
     @JsonProperty("name")
@@ -33,6 +35,20 @@ public class Category {
     @JsonProperty("updatedAt")
     private LocalDateTime updatedAt;
 
+    private boolean isActive;
+    private boolean isFeature;
+    private String icon;
+    private Banners banner;
+
+    private List<Product> featureProducts = new ArrayList<>();
+
+    @DocumentReference
+    private List<Category> categories ;
+
+    @DocumentReference
+    private List<Category> subCategory ;
+
+
 
     @Transient
     private int noOfViews;
@@ -40,11 +56,6 @@ public class Category {
     @Transient
     private int productsSold;
 
-    @DocumentReference
-    private List<Category> categories ;
-
-    @DocumentReference
-    private List<Category> subCategory ;
 
 
     public Category(String name, int level, List<Category> categories) {
