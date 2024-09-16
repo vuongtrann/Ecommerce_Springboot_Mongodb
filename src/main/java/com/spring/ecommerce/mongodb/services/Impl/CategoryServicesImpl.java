@@ -56,9 +56,9 @@ public class CategoryServicesImpl implements CategoryServices {
 
     @Override
     public Category addParent(CategoryForm form) {
-       List<Category> items = form.getCategories().stream()
+       List<Category> items = form.getSubCategories().stream()
                .map(item ->{
-                   Optional<Category> optional = categoryRepository.findById(String.valueOf(item));
+                   Optional<Category> optional = findById(String.valueOf(item));
                    if(optional.isPresent()) {
                        Category category = optional.get();
                        return category;

@@ -28,8 +28,8 @@ public class Category {
     private String id;
     @JsonProperty("name")
     private String name;
-    @JsonProperty("level")
-    private int level;
+    @JsonProperty(value = "level", defaultValue = "1")
+    private int level = 1;
     @JsonProperty("createAt")
     private LocalDateTime createdAt;
     @JsonProperty("updatedAt")
@@ -50,8 +50,8 @@ public class Category {
 
 
 
-    @DocumentReference
-    private List<Category> categories ;
+//    @DocumentReference
+//    private List<Category> categories ;
 
     @DocumentReference
     private List<Category> subCategory ;
@@ -66,9 +66,9 @@ public class Category {
 
 
 
-    public Category(String name, int level, List<Category> categories) {
+    public Category(String name, int level, List<Category> subCategory) {
         this.name = name;
-        this.categories = categories;
+        this.subCategory = subCategory;
         this.level = level;
     }
 }

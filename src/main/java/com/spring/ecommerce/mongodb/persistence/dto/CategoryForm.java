@@ -16,6 +16,6 @@ public class CategoryForm {
     private String name;
     private int level;
 
-    List<Long> categories = new ArrayList<>();
+    List<Long> subCategories = new ArrayList<>();
 
 }
