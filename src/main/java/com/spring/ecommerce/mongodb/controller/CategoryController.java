@@ -4,6 +4,8 @@ import com.spring.ecommerce.mongodb.persistence.model.Category;
 import com.spring.ecommerce.mongodb.persistence.model.Product;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,14 +20,30 @@ public class CategoryController {
         this.categoryServices = categoryServices;
     }
 
+    @RequestMapping(value = "",method = RequestMethod.GET)
+    public ResponseEntity<List<Category>> getAllCategory() {
 
-    @GetMapping("")
-    public List<Category> getAllCategory() {
-        return categoryServices.findAll();
+        return new ResponseEntity<>(categoryServices.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping("")
-    public Category createCategory(@RequestBody Category category) {
-        return categoryServices.save(category);
+    @RequestMapping(value = "",method = RequestMethod.POST)
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+        return new ResponseEntity<>(categoryServices.save(category), HttpStatus.CREATED);
     }
+
+
+
+    @RequestMapping(value = "/{id}/delete", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteCategory(@PathVariable String id) {
+        categoryServices.delete(id);
+        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+    }
+
+
+
+
+
+
+
+
 }

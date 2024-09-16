@@ -42,6 +42,14 @@ public class Category {
 
     private List<Product> featureProducts = new ArrayList<>();
 
+
+    //update
+    private List<Category> parents = new ArrayList<>() ;
+    @Transient
+    private List<String> parentIds;
+
+
+
     @DocumentReference
     private List<Category> categories ;
 
@@ -54,7 +62,7 @@ public class Category {
     private int noOfViews;
 
     @Transient
-    private int productsSold;
+    private int noOfSold;
 
 
 

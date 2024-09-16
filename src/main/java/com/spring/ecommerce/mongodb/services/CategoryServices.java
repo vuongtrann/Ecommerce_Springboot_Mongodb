@@ -14,4 +14,5 @@ public interface CategoryServices {
     public Category addParent(CategoryForm form);
     public void delete(String id);
     public Category update(String categoryId,Category category);
+    public List<Category> getTopCategory(int limit);
 }
