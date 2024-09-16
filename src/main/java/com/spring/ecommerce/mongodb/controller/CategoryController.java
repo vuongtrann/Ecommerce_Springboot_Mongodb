@@ -1,9 +1,8 @@
 package com.spring.ecommerce.mongodb.controller;
 
-import com.spring.ecommerce.mongodb.persistence.dto.CategoryForm;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
-import com.spring.ecommerce.mongodb.persistence.model.Product;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +13,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/category")
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class CategoryController {
-    @Autowired
-    private CategoryServices categoryServices;
 
-    public CategoryController(CategoryServices categoryServices) {
-        this.categoryServices = categoryServices;
-    }
+    private final CategoryServices categoryServices;
 
     /**Get categories*/
     @RequestMapping(value = "",method = RequestMethod.GET)
@@ -53,5 +49,4 @@ public class CategoryController {
         categoryServices.delete(id);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
-
 }

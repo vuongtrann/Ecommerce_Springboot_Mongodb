@@ -21,8 +21,8 @@ public class CategoryServicesImpl implements CategoryServices {
 
     private final CategoryRepository categoryRepository;
     private ObjectMapper mapper = new ObjectMapper();
-    @Autowired
-    private BannerServiceImpl  bannerService;
+
+    private final BannerServiceImpl  bannerService;
 
     @Override
     public List<Category> findAll() {

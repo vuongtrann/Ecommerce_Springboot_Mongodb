@@ -64,7 +64,6 @@ public class ProductServicesImpl implements ProductServices {
                 }
                 return null;
                 }).toList();
-
         ProductDimensions dimensions = new ProductDimensions(form.getDimensions().getId(),form.getDimensions().getWeight(),form.getDimensions().getLength(),form.getDimensions().getHeight(),form.getDimensions().getWidth());
         dimensions = dimensionRepository.save(dimensions);
 
