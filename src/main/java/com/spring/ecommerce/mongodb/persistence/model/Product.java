@@ -2,13 +2,14 @@ package com.spring.ecommerce.mongodb.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.spring.ecommerce.mongodb.persistence.model.variants.ProductVariants;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "product")
@@ -70,6 +71,9 @@ public class Product {
     @JsonProperty("sellingTypes")
     private String sellingTypes;
 
+    @Transient
+    private boolean hasVariants;
+
     @DocumentReference
     private List<ProductVariants> variants ;
 
@@ -88,14 +92,14 @@ public class Product {
 
 
     public Product(String name, String description, Double msrp, Double salePrice, Double price,
-                   int quantity, String sku, String sellingTypes, List<Category> items, ProductDimensions dimensions) {
+                   int quantity, String brandName, String sellingTypes, List<Category> items, ProductDimensions dimensions) {
         this.name = name;
         this.description = description;
         this.msrp = msrp;
         this.salePrice = salePrice;
         this.price = price;
         this.quantity = quantity;
-        this.brandName = sku;
+        this.brandName = brandName;
         this.sellingTypes = sellingTypes;
         this.categories = items;
         this.dimensions = dimensions;

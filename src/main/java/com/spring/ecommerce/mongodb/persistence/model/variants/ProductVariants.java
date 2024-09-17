@@ -1,6 +1,7 @@
-package com.spring.ecommerce.mongodb.persistence.model;
+package com.spring.ecommerce.mongodb.persistence.model.variants;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -13,7 +14,13 @@ import java.util.List;
 @Builder
 public class ProductVariants {
 
+    @Id
     private String id;
     private String productId;
+    private boolean primary;
+    private VariantType variantType;
+    private String value;
+    private List<String> imageURLs;
     private List<VariantOptions> variantOptions;
+
 }
