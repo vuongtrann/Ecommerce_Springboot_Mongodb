@@ -87,7 +87,8 @@ public class Product {
     private ProductDimensions dimensions;
 
 
-    public Product(String name, String description, Double msrp, Double salePrice, Double price, int quantity, String sku, String sellingTypes, List<Category> items, ProductDimensions dimensions) {
+    public Product(String name, String description, Double msrp, Double salePrice, Double price,
+                   int quantity, String sku, String sellingTypes, List<Category> items, ProductDimensions dimensions) {
         this.name = name;
         this.description = description;
         this.msrp = msrp;
