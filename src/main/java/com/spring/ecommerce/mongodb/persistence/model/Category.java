@@ -52,23 +52,23 @@ public class Category {
 
 //    @DocumentReference
 //    private List<Category> categories ;
+//
+//    @DocumentReference
+//    private List<Category> subCategory ;
+//
 
-    @DocumentReference
-    private List<Category> subCategory ;
 
-
-
-    @Transient
+//    @Transient
     private int noOfViews;
 
-    @Transient
+//    @Transient
     private int noOfSold;
 
 
 
     public Category(String name, int level, List<Category> subCategory) {
         this.name = name;
-        this.subCategory = subCategory;
+//        this.subCategory = subCategory;
         this.level = level;
     }
 }

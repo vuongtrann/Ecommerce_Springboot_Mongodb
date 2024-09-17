@@ -1,26 +1,28 @@
 package com.spring.ecommerce.mongodb.services.Impl;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.DocumentToDBRefTransformer;
 import com.spring.ecommerce.mongodb.persistence.dto.CategoryForm;
 import com.spring.ecommerce.mongodb.persistence.model.Banners;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
 import com.spring.ecommerce.mongodb.repository.CategoryRepository;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class CategoryServicesImpl implements CategoryServices {
 
     private final CategoryRepository categoryRepository;
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     @Autowired
     private BannerServiceImpl  bannerService;
 
@@ -31,7 +33,7 @@ public class CategoryServicesImpl implements CategoryServices {
 
     @Override
     public Optional<Category> findById(String id) {
-        return categoryRepository.findById(id);
+        return categoryRepository.findByIdCategory(id);
     }
 
     @Override
@@ -83,10 +85,18 @@ public class CategoryServicesImpl implements CategoryServices {
 
 
     @Override
-    public List<Category> getTopCategory(int limit){
-        List<Map<String, Objects>> list = categoryRepository.findTopCategorie(10);
+    public List<Category> getTopCategory(int limit) {
+        try {
+            List<Category>  list =categoryRepository.findTopCategorie(limit);
 
+            return list;
+
+        }catch (Exception e) {
+            e.printStackTrace();
+
+        }
         return null;
-    };
+    }
+
 
 }

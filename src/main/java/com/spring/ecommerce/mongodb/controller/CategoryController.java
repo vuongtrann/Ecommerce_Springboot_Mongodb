@@ -54,4 +54,11 @@ public class CategoryController {
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
 
+
+    /** Get Top Category   */
+   @RequestMapping(value = "/top", method = RequestMethod.GET)
+   public ResponseEntity<List<Category>> getTopCategory(@RequestParam int limit) {
+       return new ResponseEntity<>(categoryServices.getTopCategory(limit), HttpStatus.OK);
+   }
+
 }
