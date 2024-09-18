@@ -88,9 +88,7 @@ public class CategoryServicesImpl implements CategoryServices {
     public List<Category> getTopCategory(int limit) {
         try {
             List<Category>  list =categoryRepository.findTopCategorie(limit);
-
             return list;
-
         }catch (Exception e) {
             e.printStackTrace();
 
