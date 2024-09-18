@@ -7,6 +7,7 @@ import com.spring.ecommerce.mongodb.persistence.model.variants.ProductVariants;
 import com.spring.ecommerce.mongodb.persistence.model.variants.VariantOptions;
 import com.spring.ecommerce.mongodb.repository.*;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
+import com.spring.ecommerce.mongodb.services.CollectionServices;
 import com.spring.ecommerce.mongodb.services.ProductServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class ProductServicesImpl implements ProductServices {
 
-
     private final ProductRepository productRepository;
 
     private final CategoryServices categoryServices;
@@ -33,6 +33,8 @@ public class ProductServicesImpl implements ProductServices {
     private final ProductVariantsRepository productVariantsRepository;
 
     private final OptionValuesRepository optionValuesRepository;
+
+    private final CollectionServices collectionServices;
 
 
     @Override
@@ -111,6 +113,23 @@ public class ProductServicesImpl implements ProductServices {
         } else {
             savedProduct.setHasVariants(false);
         }
+        if(form.isHasCollection()){
+            List<Collection> collections = form.getCollections().stream()
+                    .map( collection-> {
+                        Optional<Collection> categoryOptional = collectionServices.findById(collection);
+                        if (categoryOptional.isPresent()) {
+                            Collection myCollection = categoryOptional.get();
+                            return myCollection;
+                        }
+                        return null;
+                    }).toList();
+            savedProduct.setHasCollection(true);
+            savedProduct.setCollections(collections);
+        }else {
+            savedProduct.setHasCollection(false);
+            savedProduct.setCollections(null);
+        }
+
         return productRepository.save(savedProduct);
     }
 }
