@@ -49,4 +49,15 @@ public class CategoryController {
         categoryServices.delete(id);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
+
+
+    @RequestMapping(value = "/top", method = RequestMethod.GET)
+    public ResponseEntity<List<Category>> getTopCategory(@RequestParam(value ="limit", defaultValue = "10") int limit) {
+        try{
+            return new ResponseEntity<>(categoryServices.getTopCategory(limit), HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/v1/customer")
 public class CustomerController {
@@ -59,9 +61,31 @@ public class CustomerController {
     }
 
 
+    /** Get all */
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public ResponseEntity<List<Customer>> getAllCustomers() {
+        try{
+            return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 
-
+    /** Delete */
+    @RequestMapping(value = "/{customerId}/delete", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteCustomer(@PathVariable("customerId") String customerId) {
+        if (customerId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 
 }

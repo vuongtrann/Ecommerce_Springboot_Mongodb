@@ -25,7 +25,12 @@ public class CustomerServiceImpl implements CustomerServices {
 
     @Override
     public List<Customer> getAllCustomers() {
-        return List.of();
+        try {
+            return customerRepository.findAll();
+        }  catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null ;
     }
 
     @Override
@@ -58,6 +63,6 @@ public class CustomerServiceImpl implements CustomerServices {
 
     @Override
     public void deleteCustomer(String id) {
-
+        customerRepository.deleteById(id);
     }
 }

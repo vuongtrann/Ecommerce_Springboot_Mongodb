@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
-@Document("reviews")
+@Document("review")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,6 +21,8 @@ public class Review {
     private String description ;
     @DocumentReference
     private Customer customer;
+    @DocumentReference
+    private Product product;
 
 
 
