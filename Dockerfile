@@ -1,6 +1,6 @@
 # Importing JDK and copying required files
 FROM openjdk:17-jdk AS build
-WORKDIR /Ecommerce
+WORKDIR /Ecommerce_Springboot_Mongodb
 COPY pom.xml .
 COPY src src
 
