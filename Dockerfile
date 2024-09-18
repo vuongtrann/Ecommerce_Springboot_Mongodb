@@ -14,7 +14,7 @@ RUN ./mvnw clean package -DskipTests
 
 # Stage 2: Create the final Docker image using OpenJDK 19
 FROM openjdk:17-jdk
-#VOLUME /tmp
+VOLUME /tmp
 
 # Copy the JAR from the build stage
 COPY --from=build /Ecommerce_Springboot_Mongodb/target/*.jar Ecommerce_Springboot_Mongodb-0.0.1-SNAPSHOT.jar
