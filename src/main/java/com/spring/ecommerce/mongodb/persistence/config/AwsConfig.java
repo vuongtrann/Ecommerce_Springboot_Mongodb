@@ -34,7 +34,7 @@ public class AwsConfig {
     }
     @Bean
     public ExecutorService executorService() {
-        return Executors.newFixedThreadPool(10); // Tùy chỉnh số lượng luồng
+        return Executors.newFixedThreadPool(30); // Tùy chỉnh số lượng luồng
     }
     @Bean
     public AmazonS3 amazonS3() {

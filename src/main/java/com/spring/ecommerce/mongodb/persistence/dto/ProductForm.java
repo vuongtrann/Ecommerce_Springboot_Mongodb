@@ -1,7 +1,7 @@
 package com.spring.ecommerce.mongodb.persistence.dto;
 
 import com.spring.ecommerce.mongodb.persistence.model.ProductDimensions;
-import com.spring.ecommerce.mongodb.persistence.model.ProductVariants;
+import com.spring.ecommerce.mongodb.persistence.model.variants.ProductVariants;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class ProductForm {
     private int quantity;
     private String SKU;
     private String brandName;
-
+    private boolean hasVariants;
     private String sellingTypes;
     private List<String> categories = new ArrayList<>();
     private List<ProductVariants> variants = new ArrayList<>();

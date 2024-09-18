@@ -2,10 +2,10 @@ package com.spring.ecommerce.mongodb.services.Impl;
 
 import com.spring.ecommerce.mongodb.persistence.dto.ProductForm;
 import com.spring.ecommerce.mongodb.persistence.model.*;
-import com.spring.ecommerce.mongodb.repository.ProductDimensionRepository;
-import com.spring.ecommerce.mongodb.repository.ProductRepository;
-import com.spring.ecommerce.mongodb.repository.ProductVariantsRepository;
-import com.spring.ecommerce.mongodb.repository.VariantOptionsRepository;
+import com.spring.ecommerce.mongodb.persistence.model.variants.OptionValues;
+import com.spring.ecommerce.mongodb.persistence.model.variants.ProductVariants;
+import com.spring.ecommerce.mongodb.persistence.model.variants.VariantOptions;
+import com.spring.ecommerce.mongodb.repository.*;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
 import com.spring.ecommerce.mongodb.services.ProductServices;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,8 @@ public class ProductServicesImpl implements ProductServices {
     private final VariantOptionsRepository variantOptionsRepository;
 
     private final ProductVariantsRepository productVariantsRepository;
+
+    private final OptionValuesRepository optionValuesRepository;
 
 
     @Override
@@ -73,18 +76,41 @@ public class ProductServicesImpl implements ProductServices {
         product.setCreatedAt(LocalDateTime.now());
         Product savedProduct = save(product);
 
-        if (form.getVariants() != null) {
-            for (ProductVariants variant : form.getVariants()) {
+        if (form.isHasVariants() && form.getVariants() != null) {
+            List<VariantOptions> allVariantOptions = new ArrayList<>();
+            List<OptionValues> allOptionValues = new ArrayList<>();
+
+            form.getVariants().forEach(variant -> {
                 variant.setProductId(savedProduct.getId());
+
                 if (variant.getVariantOptions() != null) {
-                    for (VariantOptions option : variant.getVariantOptions()) {
-                        variantOptionsRepository.save(option);
-                    }
+                    allVariantOptions.addAll(variant.getVariantOptions()); // Thu thập tất cả VariantOptions
+
+                    variant.getVariantOptions().forEach(option -> {
+                        if (option.getOptionValues() != null) {
+                            allOptionValues.addAll(option.getOptionValues()); // Thu thập tất cả OptionValues
+                        }
+                    });
                 }
-                productVariantsRepository.save(variant);
+            });
+
+            // Lưu tất cả VariantOptions và OptionValues cùng lúc
+            if (!allVariantOptions.isEmpty()) {
+                variantOptionsRepository.saveAll(allVariantOptions);
             }
+            if (!allOptionValues.isEmpty()) {
+                optionValuesRepository.saveAll(allOptionValues);
+            }
+
+            // Lưu tất cả các ProductVariants
+            productVariantsRepository.saveAll(form.getVariants());
+
+            // Cập nhật lại sản phẩm
+            savedProduct.setVariants(form.getVariants());
+            savedProduct.setHasVariants(form.isHasVariants());
+        } else {
+            savedProduct.setHasVariants(false);
         }
-        savedProduct.setVariants(form.getVariants());
         return productRepository.save(savedProduct);
     }
 }

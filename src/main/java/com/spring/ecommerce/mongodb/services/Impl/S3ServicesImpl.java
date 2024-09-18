@@ -338,38 +338,38 @@ public class S3ServicesImpl implements S3Services {
         return url.substring(index);
     }
 
-    public void deleteImagesByUrls(List<String> imageUrls) {
-        for (String url : imageUrls) {
-            executorService.submit(() -> {
-                try {
-                    // Giải mã và lấy file key từ URL
-                    String encodeFileKey = getFileKey(url);
-                    String decodeFileKey = URLDecoder.decode(encodeFileKey, StandardCharsets.UTF_8);
-
-                    // Tạo DeleteObjectRequest và xóa đối tượng từ S3
-                    DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucketName, decodeFileKey);
-                    amazonS3.deleteObject(deleteObjectRequest);
-                    System.out.println("File deleted successfully: " + decodeFileKey);
-                } catch (Exception e) {
-                    System.err.println("Error deleting file: " + url + " - " + e.getMessage());
-                }
-            });
-        }
-
-        // Đợi cho tất cả các luồng hoàn tất
-        executorService.shutdownNow();
-        try {
-            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
-                executorService.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            executorService.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
-
-        // Reinitialize the executor service if needed
-        executorService = Executors.newFixedThreadPool(10);
-    }
+//    public void deleteImagesByUrls(List<String> imageUrls) {
+//        for (String url : imageUrls) {
+//            executorService.submit(() -> {
+//                try {
+//                    // Giải mã và lấy file key từ URL
+//                    String encodeFileKey = getFileKey(url);
+//                    String decodeFileKey = URLDecoder.decode(encodeFileKey, StandardCharsets.UTF_8);
+//
+//                    // Tạo DeleteObjectRequest và xóa đối tượng từ S3
+//                    DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucketName, decodeFileKey);
+//                    amazonS3.deleteObject(deleteObjectRequest);
+//                    System.out.println("File deleted successfully: " + url);
+//                } catch (Exception e) {
+//                    System.err.println("Error deleting file: " + url + " - " + e.getMessage());
+//                }
+//            });
+//        }
+//
+//        // Đợi cho tất cả các luồng hoàn tất
+//        executorService.shutdownNow();
+////        try {
+////            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+////                executorService.shutdownNow();
+////            }
+////        } catch (InterruptedException e) {
+////            executorService.shutdownNow();
+////            Thread.currentThread().interrupt();
+////        }
+//
+//        // Reinitialize the executor service if needed
+//        executorService = Executors.newFixedThreadPool(30);
+//    }
 
     public void remove(String url) {
         String encodeFileKey = getFileKey(url);
@@ -378,12 +378,12 @@ public class S3ServicesImpl implements S3Services {
 
     }
 
-//    public void deleteImagesByUrls(List<String> imageUrls) {
-//        for (String imageUrl : imageUrls) {
-//            String objectKey = URLDecoder.decode(getFileKey(imageUrl), StandardCharsets.UTF_8);
-//            if (objectKey != null) {
-//                amazonS3.deleteObject(new DeleteObjectRequest(bucketName, objectKey));
-//            }
-//        }
-//    }
+    public void deleteImagesByUrls(List<String> imageUrls) {
+        for (String imageUrl : imageUrls) {
+            String objectKey = URLDecoder.decode(getFileKey(imageUrl), StandardCharsets.UTF_8);
+            if (objectKey != null) {
+                amazonS3.deleteObject(new DeleteObjectRequest(bucketName, objectKey));
+            }
+        }
+    }
 }
