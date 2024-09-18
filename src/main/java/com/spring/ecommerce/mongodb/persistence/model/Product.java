@@ -20,56 +20,35 @@ import java.util.List;
 @Builder
 public class Product {
     @Id
-    @JsonProperty("id")
     private String id;
 
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("imageURL")
     private List<String> imageURL;
 
-    @JsonProperty("primaryImageURL")
     private String primaryImageURL;
 
-    @JsonProperty("description")
     private String description;
 
-    @JsonProperty("msrp")
     private Double msrp;
 
-    @JsonProperty("salePrice")
     private Double salePrice;
 
-    @JsonProperty("price")
     private Double price;
 
-    @JsonProperty("rating")
     private Double rating;
 
-    @JsonProperty("viewCount")
-    @JsonIgnore
-    private int viewCount;
-
-    @JsonProperty("quantity")
     private int quantity;
 
-    @JsonProperty("SKU")
-    private String SKU;
-
-    @JsonProperty("quantitySold")
-    @JsonIgnore
-    private int quantitySold;
-
-    @JsonProperty("remainingQuantity")
-    @JsonIgnore
-    private int remainingQuantity;
-
-    @JsonProperty("brandName")
     private String brandName;
 
-    @JsonProperty("sellingTypes")
     private String sellingTypes;
+
+    @DocumentReference
+    private List<Category> categories;
+
+    @DocumentReference
+    private ProductDimensions dimensions;
 
     @Transient
     private boolean hasVariants;
@@ -78,18 +57,18 @@ public class Product {
     private List<ProductVariants> variants ;
 
     @JsonIgnore
+    private int viewCount;
+
+    @JsonIgnore
+    private int quantitySold;
+
+    @JsonIgnore
+    private int remainingQuantity;
+
+    @JsonIgnore
     private LocalDateTime createdAt;
     @JsonIgnore
     private LocalDateTime updatedAt;
-
-
-
-    @DocumentReference
-    private List<Category> categories;
-
-    @DocumentReference
-    private ProductDimensions dimensions;
-
 
     public Product(String name, String description, Double msrp, Double salePrice, Double price,
                    int quantity, String brandName, String sellingTypes, List<Category> items, ProductDimensions dimensions) {

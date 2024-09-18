@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class OptionValues {
     @Id
     private String id;
-    private VariantType variantType;
+    private VariantType variantTypes;
     private String value;
     private String SKU;
     private int quantity;

@@ -18,7 +18,7 @@ public class ProductVariants {
     private String id;
     private String productId;
     private boolean primary;
-    private VariantType variantType;
+    private VariantType variantTypes;
     private String value;
     private List<String> imageURLs;
     private List<VariantOptions> variantOptions;

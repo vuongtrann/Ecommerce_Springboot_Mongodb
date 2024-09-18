@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,32 +70,45 @@ public class ProductServicesImpl implements ProductServices {
         ProductDimensions dimensions = new ProductDimensions(form.getDimensions().getId(),form.getDimensions().getWeight(),form.getDimensions().getLength(),form.getDimensions().getHeight(),form.getDimensions().getWidth());
         dimensions = dimensionRepository.save(dimensions);
 
-
         Product product = new Product(form.getName(),form.getDescription(),form.getMsrp(),form.getSalePrice(),
                 form.getPrice(),form.getQuantity(),form.getSKU(),form.getSellingTypes(),items,dimensions);
 
         product.setCreatedAt(LocalDateTime.now());
         Product savedProduct = save(product);
-        if(form.isHasVariants()) {
-            if (form.getVariants() != null) {
-                for (ProductVariants variant : form.getVariants()) {
-                    variant.setProductId(savedProduct.getId());
-                    if (variant.getVariantOptions() != null) {
-                        for (VariantOptions option : variant.getVariantOptions()) {
-                            variantOptionsRepository.save(option);
-                            if (option.getOptionValues()!=null){
-                                for (OptionValues optionValues : option.getOptionValues()){
-                                    optionValuesRepository.save(optionValues);
-                                }
-                            }
+
+        if (form.isHasVariants() && form.getVariants() != null) {
+            List<VariantOptions> allVariantOptions = new ArrayList<>();
+            List<OptionValues> allOptionValues = new ArrayList<>();
+
+            form.getVariants().forEach(variant -> {
+                variant.setProductId(savedProduct.getId());
+
+                if (variant.getVariantOptions() != null) {
+                    allVariantOptions.addAll(variant.getVariantOptions()); // Thu thập tất cả VariantOptions
+
+                    variant.getVariantOptions().forEach(option -> {
+                        if (option.getOptionValues() != null) {
+                            allOptionValues.addAll(option.getOptionValues()); // Thu thập tất cả OptionValues
                         }
-                    }
-                    productVariantsRepository.save(variant);
+                    });
                 }
+            });
+
+            // Lưu tất cả VariantOptions và OptionValues cùng lúc
+            if (!allVariantOptions.isEmpty()) {
+                variantOptionsRepository.saveAll(allVariantOptions);
             }
+            if (!allOptionValues.isEmpty()) {
+                optionValuesRepository.saveAll(allOptionValues);
+            }
+
+            // Lưu tất cả các ProductVariants
+            productVariantsRepository.saveAll(form.getVariants());
+
+            // Cập nhật lại sản phẩm
             savedProduct.setVariants(form.getVariants());
             savedProduct.setHasVariants(form.isHasVariants());
-        }else {
+        } else {
             savedProduct.setHasVariants(false);
         }
         return productRepository.save(savedProduct);
