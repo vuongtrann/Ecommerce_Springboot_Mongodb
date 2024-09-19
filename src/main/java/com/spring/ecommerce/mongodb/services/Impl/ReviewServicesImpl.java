@@ -27,7 +27,8 @@ public class ReviewServicesImpl implements ReviewServices {
     @Override
     public Review findById(String id) {
         try {
-            return reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("Review not found"));
+            Review review = reviewRepository.findById(id).get();
+            return review;
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -75,6 +76,6 @@ public class ReviewServicesImpl implements ReviewServices {
 
     @Override
     public List<Review> findByProductId(String productId) {
-        return List.of();
+        return  reviewRepository.findByProductId(productId);
     }
 }
