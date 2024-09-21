@@ -2,8 +2,6 @@ package com.spring.ecommerce.mongodb.services.Impl;
 
 import com.spring.ecommerce.mongodb.persistence.dto.ProductForm;
 import com.spring.ecommerce.mongodb.persistence.model.*;
-import com.spring.ecommerce.mongodb.persistence.model.variants.OptionValues;
-import com.spring.ecommerce.mongodb.persistence.model.variants.ProductVariants;
 import com.spring.ecommerce.mongodb.persistence.model.variants.VariantOptions;
 import com.spring.ecommerce.mongodb.repository.*;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
@@ -32,7 +30,6 @@ public class ProductServicesImpl implements ProductServices {
 
     private final ProductVariantsRepository productVariantsRepository;
 
-    private final OptionValuesRepository optionValuesRepository;
 
     private final CollectionServices collectionServices;
 
@@ -80,28 +77,17 @@ public class ProductServicesImpl implements ProductServices {
 
         if (form.isHasVariants() && form.getVariants() != null) {
             List<VariantOptions> allVariantOptions = new ArrayList<>();
-            List<OptionValues> allOptionValues = new ArrayList<>();
+
 
             form.getVariants().forEach(variant -> {
-                variant.setProductId(savedProduct.getId());
-
                 if (variant.getVariantOptions() != null) {
                     allVariantOptions.addAll(variant.getVariantOptions()); // Thu thập tất cả VariantOptions
-
-                    variant.getVariantOptions().forEach(option -> {
-                        if (option.getOptionValues() != null) {
-                            allOptionValues.addAll(option.getOptionValues()); // Thu thập tất cả OptionValues
-                        }
-                    });
                 }
             });
 
             // Lưu tất cả VariantOptions và OptionValues cùng lúc
             if (!allVariantOptions.isEmpty()) {
                 variantOptionsRepository.saveAll(allVariantOptions);
-            }
-            if (!allOptionValues.isEmpty()) {
-                optionValuesRepository.saveAll(allOptionValues);
             }
 
             // Lưu tất cả các ProductVariants

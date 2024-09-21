@@ -16,10 +16,14 @@ public class ProductVariants {
 
     @Id
     private String id;
-    private String productId;
-    private boolean primary;
-    private VariantType variantTypes;
-    private String value;
+    private double rating;
+    //private String productId;
+    private String SKU;
+    private int quantityAvailable;
+    private int soldQuantity;
+    private double price;
+    private double salePrice;
+    private double MRSP;
     private List<String> imageURLs;
     private List<VariantOptions> variantOptions;
 

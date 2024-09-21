@@ -27,7 +27,7 @@ public class VariantController {
         List<File> fileList = new ArrayList<>();
         String keyUrl = "/variants/" + variantId + "/";
         ProductVariants productVariant = productVariantsRepository.findById(variantId).orElseThrow(() -> new RuntimeException("Variant not found"));
-        if (productVariant.isPrimary()){
+       try{
             for (MultipartFile file : files) {
                 File localFile = File.createTempFile("image_", file.getOriginalFilename());
                 file.transferTo(localFile);
@@ -51,9 +51,8 @@ public class VariantController {
             }
             // Trả về kết quả với biến thể đã được cập nhật
             return new ResponseEntity<>( productVariant, HttpStatus.CREATED);
-        }
-        else {
-            return new ResponseEntity<>( "This variant is not primary ! ", HttpStatus.NOT_ACCEPTABLE);
-        }
+        }catch (Exception e){
+           return new ResponseEntity<>( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+       }
     }
 }
