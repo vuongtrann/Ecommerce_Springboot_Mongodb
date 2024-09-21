@@ -41,6 +41,10 @@ public interface CategoryRepository extends MongoRepository<Category, String> {
 
 
 
+    @Aggregation(pipeline = {
+            "{$match:  {isCollection:  true}}"
+    })
+    List<Category> findCollections();
 
 
 }

@@ -39,6 +39,7 @@ public class Category {
     private boolean isFeature;
     private String icon;
     private Banners banner;
+    private boolean isCollection;
 
     private List<Product> featureProducts = new ArrayList<>();
 
@@ -47,28 +48,13 @@ public class Category {
     private List<Category> parents = new ArrayList<>() ;
     @Transient
     private List<String> parentIds;
-
-
-
-//    @DocumentReference
-//    private List<Category> categories ;
-//
-//    @DocumentReference
-//    private List<Category> subCategory ;
-//
-
-
-//    @Transient
-    private int noOfViews;
-
-//    @Transient
-    private int noOfSold;
+   private int noOfViews;
+   private int noOfSold;
 
 
 
     public Category(String name, int level, List<Category> subCategory) {
         this.name = name;
-//        this.subCategory = subCategory;
         this.level = level;
     }
 }

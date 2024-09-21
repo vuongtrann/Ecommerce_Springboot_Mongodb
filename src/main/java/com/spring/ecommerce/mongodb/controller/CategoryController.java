@@ -60,4 +60,28 @@ public class CategoryController {
         }
     }
 
+
+
+    /** Add Collections */
+    @RequestMapping(value = "/collection", method = RequestMethod.POST)
+    public ResponseEntity<Category> addCategory(@RequestParam String name) {
+        try{
+            return new ResponseEntity<>(categoryServices.addCollection(name), HttpStatus.OK);
+        }catch (Exception e) {}
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /** Get All Collections */
+    @RequestMapping(value = "/collection/all", method = RequestMethod.GET)
+    public ResponseEntity<List<Category>> getAllCollections () {
+        try{
+            return new ResponseEntity<>(categoryServices.getAllCollections(), HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
 }

@@ -96,5 +96,28 @@ public class CategoryServicesImpl implements CategoryServices {
         return null;
     }
 
+    @Override
+    public Category addCollection(String name) {
+        Category category = new Category();
+        category.setName(name);
+        category.setCreatedAt(LocalDateTime.now());
+        category.setCollection(true);
+        category.setActive(true);
+        try {
+            return categoryRepository.save(category);
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @Override
+    public List<Category> getAllCollections() {
+        try {
+            return categoryRepository.findCollections();
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

@@ -16,4 +16,9 @@ public interface CategoryServices {
     public void delete(String id);
     public Category update(String categoryId,Category category);
     public List<Category> getTopCategory(int limit);
+
+    /** Collections */
+    public Category addCollection (String name);
+    public List<Category> getAllCollections();
+
 }
