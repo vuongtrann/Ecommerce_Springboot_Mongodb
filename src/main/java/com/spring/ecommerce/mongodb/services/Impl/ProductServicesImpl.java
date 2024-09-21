@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -72,32 +73,28 @@ public class ProductServicesImpl implements ProductServices {
         Product product = new Product(form.getName(),form.getDescription(),form.getMsrp(),form.getSalePrice(),
                 form.getPrice(),form.getQuantity(),form.getSKU(),form.getSellingTypes(),items,dimensions);
 
-        product.setCreatedAt(LocalDateTime.now());
-        Product savedProduct = save(product);
+//
+//        Product savedProduct = save(product);
 
-        if (form.isHasVariants() && form.getVariants() != null) {
-            List<VariantOptions> allVariantOptions = new ArrayList<>();
+        if (Boolean.TRUE.equals(form.isHasVariants()) && form.getVariants() != null) {
+            List<VariantOptions> allVariantOptions = form.getVariants().stream()
+                    .filter(variant -> variant.getVariantOptions() != null)
+                    .flatMap(variant -> variant.getVariantOptions().stream())
+                    .collect(Collectors.toList());
 
-
-            form.getVariants().forEach(variant -> {
-                if (variant.getVariantOptions() != null) {
-                    allVariantOptions.addAll(variant.getVariantOptions()); // Thu thập tất cả VariantOptions
-                }
-            });
-
-            // Lưu tất cả VariantOptions và OptionValues cùng lúc
             if (!allVariantOptions.isEmpty()) {
-                variantOptionsRepository.saveAll(allVariantOptions);
+                variantOptionsRepository.saveAll(allVariantOptions); // Lưu tất cả VariantOptions
             }
 
-            // Lưu tất cả các ProductVariants
-            productVariantsRepository.saveAll(form.getVariants());
+            productVariantsRepository.saveAll(form.getVariants()); // Lưu tất cả ProductVariants
 
             // Cập nhật lại sản phẩm
-            savedProduct.setVariants(form.getVariants());
-            savedProduct.setHasVariants(form.isHasVariants());
-        } else {
-            savedProduct.setHasVariants(false);
+            product.setHasVariants(true);
+            product.setVariants(form.getVariants());
+        }
+        else {
+            product.setHasVariants(false);
+            product.setVariants(null);
         }
         if(form.isHasCollection()){
             List<Collection> collections = form.getCollections().stream()
@@ -109,18 +106,15 @@ public class ProductServicesImpl implements ProductServices {
                         }
                         return null;
                     }).toList();
-            savedProduct.setHasCollection(true);
-            savedProduct.setCollections(collections);
+            product.setHasCollection(true);
+            product.setCollections(collections);
         }else {
-            savedProduct.setHasCollection(false);
-            savedProduct.setCollections(null);
+            product.setHasCollection(false);
+            product.setCollections(null);
         }
-
-        return productRepository.save(savedProduct);
+        product.setCreatedAt(LocalDateTime.now());
+        return productRepository.save(product);
     }
-
-
-
 
     public Product updateRating(String productId, int rating) {
         Product product = productRepository.findById(productId)

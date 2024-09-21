@@ -53,7 +53,6 @@ public class Product {
     @DocumentReference
     private ProductDimensions dimensions;
 
-    @Transient
     private boolean hasVariants;
 
     @DocumentReference
