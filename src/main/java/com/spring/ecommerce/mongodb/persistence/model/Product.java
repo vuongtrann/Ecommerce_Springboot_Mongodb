@@ -40,6 +40,9 @@ public class Product {
 
     private int quantity;
 
+    private int noOfReviews;
+
+
     private String brandName;
 
     private String sellingTypes;

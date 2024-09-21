@@ -9,6 +9,6 @@ public interface ReviewServices {
     public Review findById(String id);
     public Review save(Review review);
     public void deleteById(String id);
-    public Review update(String id ,Review review);
+    public Review update(Review review);
     public List<Review> findByProductId(String productId);
 }

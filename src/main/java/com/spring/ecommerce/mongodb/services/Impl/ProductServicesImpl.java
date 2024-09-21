@@ -132,4 +132,26 @@ public class ProductServicesImpl implements ProductServices {
 
         return productRepository.save(savedProduct);
     }
+
+
+
+
+    public Product updateRating(String productId, int rating) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(()-> new RuntimeException("Product not found"));
+        product.setRating(product.getRating() + rating/(product.getNoOfReviews()+1));
+        return productRepository.save(product);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }

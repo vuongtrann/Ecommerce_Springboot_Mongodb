@@ -1,5 +1,6 @@
 package com.spring.ecommerce.mongodb.services.Impl;
 
+import com.spring.ecommerce.mongodb.persistence.model.Product;
 import com.spring.ecommerce.mongodb.persistence.model.Review;
 import com.spring.ecommerce.mongodb.repository.ReviewRepository;
 import com.spring.ecommerce.mongodb.services.ReviewServices;
@@ -11,6 +12,9 @@ import java.util.List;
 public class ReviewServicesImpl implements ReviewServices {
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    ProductServicesImpl productServices;
 
     @Override
     public List<Review> findAll() {
@@ -38,6 +42,7 @@ public class ReviewServicesImpl implements ReviewServices {
     @Override
     public Review save(Review review) {
         try {
+            productServices.updateRating(review.getProduct().getId(), review.getRating());
             return reviewRepository.save(review);
         }catch (Exception e){
             e.printStackTrace();
@@ -55,9 +60,10 @@ public class ReviewServicesImpl implements ReviewServices {
     }
 
     @Override
-    public Review update(String id,Review review) {
+    public Review update(Review review) {
         try {
-            Review oldReview = findById(id);
+
+            Review oldReview = reviewRepository.findById(review.getId()).orElseThrow(()-> new RuntimeException("Review not found"));
             if (review.getRating() != 0) {
                 oldReview.setRating(review.getRating());
             }

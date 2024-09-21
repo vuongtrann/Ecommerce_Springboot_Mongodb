@@ -52,8 +52,49 @@ public class ReviewController {
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /** Find by productId*/
+    @RequestMapping(value = "/review/product/{productId}", method = RequestMethod.GET)
+    public ResponseEntity<List<Review>> getReviewByProductId(@PathVariable String productId) {
+        try{
+            if (productId== null || productId.isEmpty()){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(reviewService.findByProductId(productId), HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+        }return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 
+
+    /** Update */
+    @RequestMapping(value = "/review/update",method = RequestMethod.PUT)
+    public ResponseEntity<Review> update (@RequestBody Review review){
+        try{
+            if (review.getId() == null || review.getId().isEmpty()){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(reviewService.update(review), HttpStatus.OK);
+        }catch(Exception e){
+            e.printStackTrace();
+        }return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+
+    /** Detele */
+    @RequestMapping(value = "review/{reviewId}/delete", method = RequestMethod.DELETE)
+    public ResponseEntity<String> delete (@PathVariable String reviewId){
+        try {
+            if (reviewId == null || reviewId.isEmpty()){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            reviewService.deleteById(reviewId);
+            return new ResponseEntity<>( "Deleted",HttpStatus.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+        }return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 
 

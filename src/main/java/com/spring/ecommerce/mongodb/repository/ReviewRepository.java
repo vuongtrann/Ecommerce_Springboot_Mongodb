@@ -15,17 +15,15 @@ public interface ReviewRepository extends MongoRepository<Review, String> {
     })
     List<Review>findAll();
 
-
-    @Aggregation(pipeline = {
-            "{ $match: { _id: ?0 } }",
-            "{ $lookup: { from: 'product', localField: 'product', foreignField: '_id', as: 'products' } }",
-            "{ $unwind: '$products' }",
-            "{ $project: { _id: 1, rating: 1, title: 1,description:1,  customer: 1} }"
-    })
-
+@Aggregation(pipeline = {
+        "{ $match: { _id: ?0 } }"
+})
     public Optional<Review> findById(String id);
 
 
-
+    @Aggregation(pipeline = {
+            "{$match: { product: ObjectId(?0)}}",
+            "{$project: {_id: 1, rating: 1, title: 1,description: 1 , customer: 1 }}"
+    })
     List<Review> findByProductId(String productId);
 }
