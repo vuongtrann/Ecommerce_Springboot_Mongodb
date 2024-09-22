@@ -152,12 +152,12 @@ public class ProductController {
 
 
     /** UPDATE PRODUCT */
-//    @RequestMapping(value = "/{product}",method = RequestMethod.PUT)
-//    public ResponseEntity updateProduct(@PathVariable("productId") String productId,@RequestBody ProductForm product) {
-//        if(productServices.findById(productId).isPresent()){
-//            return new ResponseEntity<>(productServices.updateProduct(productId,product),HttpStatus.OK);
-//        }else {
-//            return new ResponseEntity<>("Product with id : " + productId + " not found", HttpStatus.NOT_FOUND);
-//        }
-//    }
+    @PutMapping( "/{productId}")
+    public ResponseEntity updateProduct(@PathVariable("productId") String productId ,@RequestBody ProductForm product) {
+        if(productServices.findById(productId).isPresent()){
+            return new ResponseEntity<>(productServices.updateProduct(productId,product),HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("Product with id : " + productId + " not found", HttpStatus.NOT_FOUND);
+        }
+    }
 }

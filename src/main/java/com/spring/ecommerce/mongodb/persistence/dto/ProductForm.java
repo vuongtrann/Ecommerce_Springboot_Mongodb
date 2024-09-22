@@ -15,15 +15,13 @@ import java.util.List;
 @Builder
 public class ProductForm {
     private String name;
-    private List<String> imageURL;
     private String description;
+    private List<String> imageURL;
+    private String primaryImageURL;
     private String brandName;
+    private String sellingTypes;
     private boolean hasVariants;
     private List<ProductVariants> variants = new ArrayList<>();
-    private String sellingTypes;
     private List<String> categories = new ArrayList<>();
     private ProductDimensions dimensions;
-
-    private boolean hasCollection;
-    private List<String> collections = new ArrayList<>();
 }

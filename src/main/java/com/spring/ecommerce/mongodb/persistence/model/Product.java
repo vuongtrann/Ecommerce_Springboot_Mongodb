@@ -49,12 +49,6 @@ public class Product {
     @DocumentReference
     private List<ProductVariants> variants ;
 
-    @Transient
-    private boolean hasCollection;
-
-    @DocumentReference
-    private List<Collection> collections;
-
     @JsonIgnore
     private int viewCount;
 
