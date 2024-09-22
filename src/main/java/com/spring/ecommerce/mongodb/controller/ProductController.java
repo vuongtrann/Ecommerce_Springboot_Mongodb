@@ -52,7 +52,7 @@ public class ProductController {
     }
 
     /**Upload Image*/
-    @PostMapping("/{productId}/upload/image")
+    @RequestMapping(value = "/{productId}/upload/image",method = RequestMethod.POST)
     public ResponseEntity uploadImage(@PathVariable("productId") String productId, @RequestParam("file") MultipartFile[] files){
         List<File> fileList = new ArrayList<>();
         String keyUrl = "product/" + productId + "/" ;
@@ -101,7 +101,7 @@ public class ProductController {
 
     }
 
-
+    /** UPLOAD VARIANT IMAGE */
     @RequestMapping(value = "/{productId}/variant/{variantId}/upload/image",method = RequestMethod.POST)
     public ResponseEntity uploadVariantImage(@PathVariable("productId") String productId, @PathVariable("variantId") String variantId, @RequestParam("files") MultipartFile[] files) {
         List<File> fileList = new ArrayList<>();
@@ -148,4 +148,16 @@ public class ProductController {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+
+
+    /** UPDATE PRODUCT */
+//    @RequestMapping(value = "/{product}",method = RequestMethod.PUT)
+//    public ResponseEntity updateProduct(@PathVariable("productId") String productId,@RequestBody ProductForm product) {
+//        if(productServices.findById(productId).isPresent()){
+//            return new ResponseEntity<>(productServices.updateProduct(productId,product),HttpStatus.OK);
+//        }else {
+//            return new ResponseEntity<>("Product with id : " + productId + " not found", HttpStatus.NOT_FOUND);
+//        }
+//    }
 }

@@ -6,6 +6,7 @@ import com.mongodb.DocumentToDBRefTransformer;
 import com.spring.ecommerce.mongodb.persistence.dto.CategoryForm;
 import com.spring.ecommerce.mongodb.persistence.model.Banners;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
+import com.spring.ecommerce.mongodb.persistence.model.variants.VariantType;
 import com.spring.ecommerce.mongodb.repository.CategoryRepository;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class CategoryServicesImpl implements CategoryServices {
     @Override
     public Category save(Category category) {
         category.setCreatedAt(LocalDateTime.now());
+
         if (category.getBanner()!=null ) {
            Banners banners=  bannerService.findById(category.getBanner().getId())
                    .orElseThrow(() -> new RuntimeException("Banner not found"));
@@ -52,6 +54,7 @@ public class CategoryServicesImpl implements CategoryServices {
                 category.getParents().add(parent);
             });
         }
+
 
         return categoryRepository.save(category);
     }

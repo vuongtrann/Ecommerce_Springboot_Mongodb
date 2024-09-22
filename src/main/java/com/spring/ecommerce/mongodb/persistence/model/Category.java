@@ -2,6 +2,7 @@ package com.spring.ecommerce.mongodb.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.spring.ecommerce.mongodb.persistence.model.variants.VariantType;
 import lombok.*;
 import org.springframework.boot.Banner;
 import org.springframework.data.annotation.Id;
@@ -41,6 +42,7 @@ public class Category {
     private Banners banner;
     private boolean isCollection;
 
+    private List<VariantType> variantTypes;
     private List<Product> featureProducts = new ArrayList<>();
 
 

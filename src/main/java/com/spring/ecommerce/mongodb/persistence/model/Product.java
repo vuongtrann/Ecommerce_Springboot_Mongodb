@@ -30,18 +30,9 @@ public class Product {
 
     private String description;
 
-    private Double msrp;
-
-    private Double salePrice;
-
-    private Double price;
-
     private Double rating = 0.0;
 
-    private int quantity;
-
     private int noOfReviews = 0;
-
 
     private String brandName;
 
@@ -78,14 +69,9 @@ public class Product {
     @JsonIgnore
     private LocalDateTime updatedAt;
 
-    public Product(String name, String description, Double msrp, Double salePrice, Double price,
-                   int quantity, String brandName, String sellingTypes, List<Category> items, ProductDimensions dimensions) {
+    public Product(String name, String description, String brandName, String sellingTypes, List<Category> items, ProductDimensions dimensions) {
         this.name = name;
         this.description = description;
-        this.msrp = msrp;
-        this.salePrice = salePrice;
-        this.price = price;
-        this.quantity = quantity;
         this.brandName = brandName;
         this.sellingTypes = sellingTypes;
         this.categories = items;

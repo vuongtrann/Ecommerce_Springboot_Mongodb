@@ -17,11 +17,6 @@ public class ProductForm {
     private String name;
     private List<String> imageURL;
     private String description;
-    private Double msrp;
-    private Double salePrice;
-    private Double price;
-    private int quantity;
-    private String SKU;
     private String brandName;
     private boolean hasVariants;
     private List<ProductVariants> variants = new ArrayList<>();
