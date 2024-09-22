@@ -1,17 +1,11 @@
 package com.spring.ecommerce.mongodb.services.Impl;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.DocumentToDBRefTransformer;
 import com.spring.ecommerce.mongodb.persistence.dto.CategoryForm;
 import com.spring.ecommerce.mongodb.persistence.model.Banners;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
-import com.spring.ecommerce.mongodb.persistence.model.variants.VariantType;
 import com.spring.ecommerce.mongodb.repository.CategoryRepository;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.Logger;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +17,9 @@ import java.util.*;
 public class CategoryServicesImpl implements CategoryServices {
 
     private final CategoryRepository categoryRepository;
-    private ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//    private ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+
     @Autowired
     private BannerServiceImpl  bannerService;
 
@@ -37,48 +33,47 @@ public class CategoryServicesImpl implements CategoryServices {
         return categoryRepository.findByIdCategory(id);
     }
 
+
     @Override
     public Category save(Category category) {
         category.setCreatedAt(LocalDateTime.now());
-
         if (category.getBanner()!=null ) {
            Banners banners=  bannerService.findById(category.getBanner().getId())
                    .orElseThrow(() -> new RuntimeException("Banner not found"));
            category.setBanner(banners);
         }
+        category = categoryRepository.save(category);
 
-        if (category.getParentIds()!=null && !category.getParentIds().isEmpty()) {
-            category.getParentIds().forEach(id -> {
+        if (category.getParentId()!=null && !category.getParentId().isEmpty()) {
+            Category finalCategory = category;
+            category.getParentId().forEach(id -> {
                 Category parent = categoryRepository.findById(id).
                         orElseThrow(() -> new RuntimeException("Parent not found with id : " + id));
-                category.getParents().add(parent);
+                parent.getSubCategories().add(finalCategory);
+                categoryRepository.save(parent);
             });
         }
 
 
-        return categoryRepository.save(category);
+        return category;
     }
 
+
+
     @Override
-    public Category addParent(CategoryForm form) {
-       List<Category> items = form.getSubCategories().stream()
-               .map(item ->{
-                   Optional<Category> optional = findById(String.valueOf(item));
-                   if(optional.isPresent()) {
-                       Category category = optional.get();
-                       return category;
-                   }
-                   return null;
-               }).toList();
-       Category category = new Category(form.getName(),form.getLevel(),items);
-       category.setCreatedAt(LocalDateTime.now());
-       category = save(category);
-       return category;
+    public Category addParent(String parentId, String childId) {
+        Category parent = categoryRepository.findByIdCategory(parentId).orElseThrow(() -> new RuntimeException("Parent not found with id : " + parentId));
+        Category child = categoryRepository.findByIdCategory(childId).orElseThrow(() -> new RuntimeException("Child not found with id : " + childId));
+        parent.getSubCategories().add(child);
+       return categoryRepository.save(parent);
     }
+
+
 
     @Override
     public void delete(String id) {
         categoryRepository.deleteById(id);
+        categoryRepository.updateParents(id);
     }
 
     @Override
@@ -123,4 +118,23 @@ public class CategoryServicesImpl implements CategoryServices {
         }
     }
 
+
+
+//    @Override
+//    public Category addParent(CategoryForm form) {
+//       List<Category> items = form.getSubCategories().stream()
+//               .map(item ->{
+//                   Optional<Category> optional = findById(String.valueOf(item));
+//                   if(optional.isPresent()) {
+//                       Category category = optional.get();
+//                       return category;
+//                   }
+//                   return null;
+//               }).toList();
+//       Category category = new Category();
+////       Category category = new Category(form.getName(),form.getLevel(),items);
+//       category.setCreatedAt(LocalDateTime.now());
+//       category = save(category);
+//       return category;
+//    }
 }

@@ -1,10 +1,9 @@
 package com.spring.ecommerce.mongodb.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.spring.ecommerce.mongodb.persistence.model.variants.VariantType;
 import lombok.*;
-import org.springframework.boot.Banner;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,38 +24,22 @@ import java.util.List;
 public class Category {
     @Id
     @Generated
-    @JsonProperty("id")
     private String id;
-    @JsonProperty("name")
     private String name;
-    @JsonProperty(value = "level", defaultValue = "1")
-    private int level = 1;
-    @JsonProperty("createAt")
     private LocalDateTime createdAt;
-    @JsonProperty("updatedAt")
     private LocalDateTime updatedAt;
-
     private boolean isActive;
     private boolean isFeature;
+    private boolean isCollection;
     private String icon;
     private Banners banner;
-    private boolean isCollection;
-
     private List<VariantType> variantTypes;
     private List<Product> featureProducts = new ArrayList<>();
-
-
-    //update
-    private List<Category> parents = new ArrayList<>() ;
+    private int noOfViews;
+    private int noOfSold;
+    @DocumentReference
+    private List<Category> subCategories = new ArrayList<>();
     @Transient
-    private List<String> parentIds;
-   private int noOfViews;
-   private int noOfSold;
+    private List<String> parentId = new ArrayList<>();
 
-
-
-    public Category(String name, int level, List<Category> subCategory) {
-        this.name = name;
-        this.level = level;
-    }
 }

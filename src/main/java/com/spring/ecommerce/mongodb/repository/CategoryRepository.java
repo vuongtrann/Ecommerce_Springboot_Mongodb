@@ -1,23 +1,27 @@
 package com.spring.ecommerce.mongodb.repository;
 
-import com.mongodb.DocumentToDBRefTransformer;
-import com.mongodb.lang.NonNullApi;
+
 import com.spring.ecommerce.mongodb.persistence.model.Category;
-import org.bson.Document;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.Update;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+
 import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends MongoRepository<Category, String> {
 
-    @Aggregation(pipeline = {"{$match : {}}"})
+    @Aggregation(pipeline = {
+            " {$match: { isCollection: false, isFeature: false, isActive: true}}",
+            "{$project: {_id: 1, name:  1}}"
+    })
     List<Category> findAll();
 
     @Aggregation(pipeline = {
@@ -47,4 +51,10 @@ public interface CategoryRepository extends MongoRepository<Category, String> {
     List<Category> findCollections();
 
 
+    /** Update Parent Category after delete*/
+    @Modifying
+    @Transactional
+    @Query(value = "{'subCategories': ?0}")
+    @Update ( value = "{'$pull': {'subCategories': ?0}}" )
+    void updateParents(String subCategoryId);
 }

@@ -72,10 +72,10 @@ public class BannerController {
 
 //    @PostMapping(value = "/add", consumes = "multipart/form-data")
     @RequestMapping(value = "/multi", method = RequestMethod.POST, consumes = "multipart/form-data")
-    public ResponseEntity<List<String>> add (
+    public ResponseEntity<List<Banners>> add (
             @RequestPart("file") List<MultipartFile> file) throws IOException, AmazonS3Exception {
         try{
-            List<String> bannerURLs= bannerService.saveMultil(file);
+            List<Banners> bannerURLs= bannerService.saveMultil(file);
             return new ResponseEntity<>(bannerURLs, HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();

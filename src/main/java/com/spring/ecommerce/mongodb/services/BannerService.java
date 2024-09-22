@@ -11,7 +11,7 @@ public interface BannerService {
     public List<Banners> findAll();
     public Optional<Banners> findById(String id);
     public Banners save(MultipartFile file, String categoryId) throws IOException;
-    public List<String> saveMultil ( List<MultipartFile> files);
+    public List<Banners> saveMultil ( List<MultipartFile> files);
     public Banners update(MultipartFile file, String idBanner) throws IOException;
     public void delete(String id);
     public Banners updateStatus(String id);

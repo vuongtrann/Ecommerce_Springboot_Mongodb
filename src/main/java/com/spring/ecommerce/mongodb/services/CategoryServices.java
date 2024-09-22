@@ -12,7 +12,7 @@ public interface CategoryServices {
     public List<Category> findAll();
     public Optional<Category> findById(String id);
     public Category save(Category category);
-    public Category addParent(CategoryForm form);
+    public Category addParent(String parentId, String childId);
     public void delete(String id);
     public Category update(String categoryId,Category category);
     public List<Category> getTopCategory(int limit);

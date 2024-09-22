@@ -54,7 +54,7 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public List<String> saveMultil(List<MultipartFile> files) {
+    public List<Banners> saveMultil(List<MultipartFile> files) {
         return files.stream().map(file -> {
             try {
                 String url = s3Services.uploadBanner(file);
@@ -63,7 +63,7 @@ public class BannerServiceImpl implements BannerService {
                 banners.setStartDate(LocalDate.now());
                 banners.setEndDate(LocalDate.now().plusDays(10));
                 bannerRepository.save(banners);
-                return url;
+                return banners;
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage());
             }
