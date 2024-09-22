@@ -10,5 +10,5 @@ public interface ReviewServices {
     public Review save(Review review);
     public void deleteById(String id);
     public Review update(Review review);
-    public List<Review> findByProductId(String productId);
+    public List<Review> findByProductId(String productId, int limit);
 }

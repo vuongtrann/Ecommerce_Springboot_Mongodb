@@ -7,6 +7,7 @@ import com.spring.ecommerce.mongodb.services.ReviewServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 @Service
 public class ReviewServicesImpl implements ReviewServices {
@@ -42,8 +43,10 @@ public class ReviewServicesImpl implements ReviewServices {
     @Override
     public Review save(Review review) {
         try {
-            productServices.updateRating(review.getProduct().getId(), review.getRating());
-            return reviewRepository.save(review);
+            review.setCreatedAt(LocalDateTime.now());
+            reviewRepository.save(review);
+            productServices.updateRating(review.getProduct().getId(), reviewRepository.avgRating(review.getProduct().getId()));
+            return review;
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -81,7 +84,7 @@ public class ReviewServicesImpl implements ReviewServices {
     }
 
     @Override
-    public List<Review> findByProductId(String productId) {
-        return  reviewRepository.findByProductId(productId);
+    public List<Review> findByProductId(String productId, int limit) {
+        return  reviewRepository.findByProductId(productId, limit);
     }
 }

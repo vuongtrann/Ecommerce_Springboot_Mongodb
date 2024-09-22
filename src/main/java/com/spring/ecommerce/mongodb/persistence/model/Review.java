@@ -10,6 +10,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.time.LocalDateTime;
+
 
 @Document("review")
 @Getter
@@ -26,6 +28,7 @@ public class Review {
     private Customer customer;
     @DocumentReference
     private Product product;
+    private LocalDateTime createdAt;
 
 
 

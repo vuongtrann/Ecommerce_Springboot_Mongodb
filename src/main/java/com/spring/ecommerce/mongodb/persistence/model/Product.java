@@ -36,11 +36,11 @@ public class Product {
 
     private Double price;
 
-    private Double rating;
+    private Double rating = 0.0;
 
     private int quantity;
 
-    private int noOfReviews;
+    private int noOfReviews = 0;
 
 
     private String brandName;

@@ -54,12 +54,14 @@ public class ReviewController {
 
     /** Find by productId*/
     @RequestMapping(value = "/review/product/{productId}", method = RequestMethod.GET)
-    public ResponseEntity<List<Review>> getReviewByProductId(@PathVariable String productId) {
+    public ResponseEntity<List<Review>> getReviewByProductId(
+            @PathVariable String productId,
+            @RequestParam(value = "limit", defaultValue = "20") int limit) {
         try{
             if (productId== null || productId.isEmpty()){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>(reviewService.findByProductId(productId), HttpStatus.OK);
+            return new ResponseEntity<>(reviewService.findByProductId(productId, limit), HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
         }return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
