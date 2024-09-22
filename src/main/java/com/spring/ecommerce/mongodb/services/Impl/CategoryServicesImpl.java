@@ -106,7 +106,7 @@ public class CategoryServicesImpl implements CategoryServices {
         try {
             return categoryRepository.save(category);
         }catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -116,7 +116,7 @@ public class CategoryServicesImpl implements CategoryServices {
         try {
             return categoryRepository.findCollections();
         }catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 

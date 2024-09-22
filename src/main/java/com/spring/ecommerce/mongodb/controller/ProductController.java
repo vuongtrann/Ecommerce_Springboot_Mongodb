@@ -79,7 +79,7 @@ public class ProductController {
             }
             return new ResponseEntity<>(productServices.save(product), HttpStatus.CREATED);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -145,7 +145,7 @@ public class ProductController {
 
 
         }catch (IOException e){
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
