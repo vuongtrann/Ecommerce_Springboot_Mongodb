@@ -153,7 +153,7 @@ public class ProductController {
 
     /** UPDATE PRODUCT */
     @PutMapping( "/{productId}")
-    public ResponseEntity updateProduct(@PathVariable("productId") String productId ,@RequestBody ProductForm product) {
+    public ResponseEntity updateProduct(@PathVariable("productId") String productId , @RequestBody Product product) {
         if(productServices.findById(productId).isPresent()){
             return new ResponseEntity<>(productServices.updateProduct(productId,product),HttpStatus.OK);
         }else {

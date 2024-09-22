@@ -14,14 +14,24 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ProductForm {
+
     private String name;
-    private String description;
+
     private List<String> imageURL;
+
     private String primaryImageURL;
+
+    private String description;
+
+    private Double rating = 0.0;
+
+    private int noOfReviews = 0;
+
     private String brandName;
+
     private String sellingTypes;
-    private boolean hasVariants;
-    private List<ProductVariants> variants = new ArrayList<>();
     private List<String> categories = new ArrayList<>();
     private ProductDimensions dimensions;
+    private boolean hasVariants;
+    private List<ProductVariants> variants = new ArrayList<>();
 }

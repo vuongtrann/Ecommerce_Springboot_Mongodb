@@ -13,7 +13,7 @@ public interface ProductServices {
     //public Product update(Product product);
     public Optional<Product> findById(String id);
     public Product addProduct(ProductForm form);
-    public Product updateProduct(String productId, ProductForm form);
+    public Product updateProduct(String productId, Product form);
 
 
 }
