@@ -3,12 +3,14 @@ package com.spring.ecommerce.mongodb.services;
 import com.spring.ecommerce.mongodb.persistence.dto.ProductForm;
 import com.spring.ecommerce.mongodb.persistence.model.Product;
 import com.spring.ecommerce.mongodb.persistence.projection.ProductProjection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ProductServices {
-    public List<ProductProjection> findAll();
+    public Page<ProductProjection> findAll(Pageable pageable);
 
     public Product save(Product product);
     //public Product update(Product product);

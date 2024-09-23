@@ -12,6 +12,8 @@ import com.spring.ecommerce.mongodb.services.CollectionServices;
 import com.spring.ecommerce.mongodb.services.ProductServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,8 +39,8 @@ public class ProductServicesImpl implements ProductServices {
 
 
     @Override
-    public List<ProductProjection> findAll(){
-        return productRepository.findAllProjected();
+    public Page<ProductProjection> findAll(Pageable pageable){
+        return productRepository.findAllProjectedBy(pageable);
     }
 
     @Override
