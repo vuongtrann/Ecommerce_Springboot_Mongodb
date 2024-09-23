@@ -3,6 +3,7 @@ package com.spring.ecommerce.mongodb.controller;
 import com.spring.ecommerce.mongodb.persistence.dto.ProductForm;
 import com.spring.ecommerce.mongodb.persistence.model.Product;
 import com.spring.ecommerce.mongodb.persistence.model.variants.ProductVariants;
+import com.spring.ecommerce.mongodb.persistence.projection.ProductProjection;
 import com.spring.ecommerce.mongodb.repository.ProductVariantsRepository;
 import com.spring.ecommerce.mongodb.services.ProductServices;
 import com.spring.ecommerce.mongodb.services.S3Services;
@@ -31,7 +32,7 @@ public class ProductController {
 
     /**FIND ALL PRODUCT*/
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<Product> findAllProduct() {
+    public List<ProductProjection> findAllProduct() {
         return productServices.findAll();
     }
 
@@ -153,7 +154,7 @@ public class ProductController {
 
     /** UPDATE PRODUCT */
     @PutMapping( "/{productId}")
-    public ResponseEntity updateProduct(@PathVariable("productId") String productId , @RequestBody Product product) {
+    public ResponseEntity updateProduct(@PathVariable("productId") String productId , @RequestBody ProductForm product) {
         if(productServices.findById(productId).isPresent()){
             return new ResponseEntity<>(productServices.updateProduct(productId,product),HttpStatus.OK);
         }else {

@@ -19,4 +19,9 @@ public class VariantOptions {
     private String id;
     private VariantType variantTypes;
     private String value;
+
+    public VariantOptions(VariantType variantTypes, String value) {
+        this.variantTypes = variantTypes;
+        this.value = value;
+    }
 }
