@@ -1,11 +1,12 @@
 package com.spring.ecommerce.mongodb.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-
+@CrossOrigin(origins = "*")
 @RestController
 public class WebhookController {
     @PostMapping("/webhook-endpoint")
