@@ -1,8 +1,7 @@
-package com.spring.ecommerce.mongodb.persistence.model;
+package com.spring.ecommerce.mongodb.persistence.model.Auth;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Getter
@@ -14,11 +13,9 @@ public class Account {
     @Id
     @GeneratedValue
     private Long id;
-    private String userName;
-    private String password;
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String email;
+    private String password;
     private String phone;
     private boolean isConfirmed;
     private String customerId;
