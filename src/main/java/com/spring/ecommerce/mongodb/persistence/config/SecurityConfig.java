@@ -36,7 +36,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/auth/exists").permitAll()
                         .requestMatchers( PUBLIC_ENDPOINTS).permitAll()
 
-                        .anyRequest().authenticated()
+//                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
         http.oauth2ResourceServer(auth2 ->
                 auth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))
