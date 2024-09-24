@@ -101,7 +101,7 @@ public class ProductServicesImpl implements ProductServices {
                         new VariantOptions(VariantType.RAM, variantForm.getVariantOptions().get(1).getValue()),
                         new VariantOptions(VariantType.STORAGE, variantForm.getVariantOptions().get(2).getValue())
                 );
-
+                variantOptionsRepository.saveAll(variantOptionsList);
                 // Tạo mới biến thể
                 ProductVariants newVariant = new ProductVariants();
                 newVariant.setVariantOptions(variantOptionsList);
