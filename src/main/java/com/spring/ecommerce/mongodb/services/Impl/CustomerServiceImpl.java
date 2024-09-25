@@ -42,8 +42,8 @@ public class CustomerServiceImpl implements CustomerServices {
     public Customer updateCustomer(String id,Customer customer) {
         try {
             Customer oldCustomer = getCustomerById(id);
-            if (customer.getName()!=null){
-                oldCustomer.setName(customer.getName());
+            if (customer.getFullName()!=null){
+                oldCustomer.setFullName(customer.getFullName());
             }
             if (customer.getAddress()!=null){
                 oldCustomer.setAddress(customer.getAddress());

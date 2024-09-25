@@ -1,5 +1,6 @@
 package com.spring.ecommerce.mongodb.controller;
 
+import com.spring.ecommerce.mongodb.persistence.dto.ReviewForm;
 import com.spring.ecommerce.mongodb.persistence.model.Review;
 import com.spring.ecommerce.mongodb.services.Impl.ReviewServicesImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class ReviewController {
 
     /** Find by productId*/
     @RequestMapping(value = "/review/product/{productId}", method = RequestMethod.GET)
-    public ResponseEntity<List<Review>> getReviewByProductId(
+    public ResponseEntity<List<ReviewForm>> getReviewByProductId(
             @PathVariable String productId,
             @RequestParam(value = "limit", defaultValue = "20") int limit) {
         try{

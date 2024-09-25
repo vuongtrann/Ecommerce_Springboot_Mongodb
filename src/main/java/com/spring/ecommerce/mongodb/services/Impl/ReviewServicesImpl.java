@@ -1,5 +1,6 @@
 package com.spring.ecommerce.mongodb.services.Impl;
 
+import com.spring.ecommerce.mongodb.persistence.dto.ReviewForm;
 import com.spring.ecommerce.mongodb.persistence.model.Product;
 import com.spring.ecommerce.mongodb.persistence.model.Review;
 import com.spring.ecommerce.mongodb.repository.ReviewRepository;
@@ -84,7 +85,7 @@ public class ReviewServicesImpl implements ReviewServices {
     }
 
     @Override
-    public List<Review> findByProductId(String productId, int limit) {
+    public List<ReviewForm> findByProductId(String productId, int limit) {
         return  reviewRepository.findByProductId(productId, limit);
     }
 }

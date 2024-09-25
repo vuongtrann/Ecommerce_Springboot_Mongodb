@@ -2,9 +2,7 @@ package com.spring.ecommerce.mongodb.services.AuthService.Impl;
 
 import com.spring.ecommerce.mongodb.persistence.model.Auth.Account;
 import com.spring.ecommerce.mongodb.persistence.model.Customer;
-import com.spring.ecommerce.mongodb.persistence.model.User;
 import com.spring.ecommerce.mongodb.repository.AuthRepository.AccountRepository;
-import com.spring.ecommerce.mongodb.repository.CustomerRepository;
 import com.spring.ecommerce.mongodb.services.AuthService.AccountService;
 import com.spring.ecommerce.mongodb.services.Impl.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +36,7 @@ public class AccountServiceImpl implements AccountService {
 
                 Customer customer = new Customer();
                 customer.setEmail(account.getEmail());
-                customer.setName(account.getFullName());
+                customer.setFullName(account.getFullName());
                 customer.setPhone(account.getPhone());
                 customerService.saveCustomer(customer);
 

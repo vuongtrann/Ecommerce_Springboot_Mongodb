@@ -18,17 +18,20 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Review {
     @Id
     private String id;
     private int rating;
     private String title;
     private String description ;
+    private LocalDateTime createdAt;
+
+
     @DocumentReference
     private Customer customer;
     @DocumentReference
     private Product product;
-    private LocalDateTime createdAt;
 
 
 

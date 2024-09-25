@@ -1,22 +1,25 @@
 package com.spring.ecommerce.mongodb.persistence.model;
 
-import lombok.AllArgsConstructor;
+import com.spring.ecommerce.mongodb.persistence.Enum.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 
 public abstract class User {
 
-    private String name;
+    private String fullName;
     private String email;
     private String phone;
     private String address;
+    private List<String> roles;
 
 
-    public User(String name, String email, String phone, String address) {
-        this.name = name;
+    public User(String fullName, String email, String phone, String address) {
+        this.fullName = fullName;
         this.email = email;
         this.phone = phone;
         this.address = address;
