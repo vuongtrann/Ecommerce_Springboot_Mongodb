@@ -87,8 +87,7 @@ public class ProductServicesImpl implements ProductServices {
                 items,
                 dimensions
         );
-
-        // Kiểm tra và xử lý các biến thể
+        // xu ly variant
         if (Boolean.TRUE.equals(form.isHasVariants()) && form.getVariants() != null) {
             product.setOptions(form.getOptions());
             List<ProductVariants> newVariants = new ArrayList<>();
@@ -129,6 +128,8 @@ public class ProductServicesImpl implements ProductServices {
         }
 
 
+        //Xu ly spetification
+        product.setSpecifications(form.getSpecifications());
         // Cập nhật thời gian tạo và lưu sản phẩm
         product.setCreatedAt(LocalDateTime.now());
         return productRepository.save(product);

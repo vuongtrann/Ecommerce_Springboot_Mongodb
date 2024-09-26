@@ -1,6 +1,7 @@
 package com.spring.ecommerce.mongodb.controller;
 
 import com.spring.ecommerce.mongodb.persistence.model.Category;
+import com.spring.ecommerce.mongodb.persistence.model.Specification.SpecificationTypes;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +83,21 @@ public class CategoryController {
     }
 
 
+    /**Add Specification Type*/
+    @RequestMapping(value = "/{categoryId}/specificationType",method = RequestMethod.POST)
+    public ResponseEntity addSpecificationType(@PathVariable("categoryId") String categoryId, @RequestBody SpecificationTypes specificationTypes){
+        return new ResponseEntity(categoryServices.addSpecificationType(categoryId,specificationTypes),HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/{categoryId}/specificationType", method = RequestMethod.GET)
+    public ResponseEntity getSpecificationType(@PathVariable("categoryId") String categoryId){
+        List<SpecificationTypes> specificationTypes = categoryServices.getSpecificationTypesByCategoryID(categoryId);
+        if (specificationTypes!=null){
+            return new ResponseEntity(specificationTypes,HttpStatus.OK);
+        }else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
 
 
 }

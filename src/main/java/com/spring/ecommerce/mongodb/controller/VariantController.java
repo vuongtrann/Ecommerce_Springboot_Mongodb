@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 @CrossOrigin(origins = "*")
@@ -22,11 +24,13 @@ public class VariantController {
     private final ProductVariantsRepository productVariantsRepository;
     private final S3Services s3Services;
 
-    @RequestMapping(value = "/{variantId}/upload/image",method = RequestMethod.POST)
-    public ResponseEntity uploadImage(@PathVariable("variantId") String variantId, @RequestParam("files") MultipartFile[] files) throws IOException {
+    @RequestMapping(value = "/upload/image",method = RequestMethod.POST)
+    public ResponseEntity uploadImage(@RequestParam("files") MultipartFile[] files) throws IOException {
         List<File> fileList = new ArrayList<>();
-        String keyUrl = "/variants/" + variantId + "/";
-        ProductVariants productVariant = productVariantsRepository.findById(variantId).orElseThrow(() -> new RuntimeException("Variant not found"));
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String folder = now.format(formatter);
+        String keyUrl = "variants/" + folder + "/";
        try{
             for (MultipartFile file : files) {
                 File localFile = File.createTempFile("image_", file.getOriginalFilename());
@@ -35,22 +39,22 @@ public class VariantController {
             }
 
             // Upload các file lên S3 và lấy danh sách các URL đã upload
-            List<String> fileURLs = s3Services.upload(variantId, fileList, keyUrl);
-            List<String> oldFileURLs = productVariant.getImageURLs();
+            List<String> fileURLs = s3Services.upload( fileList, keyUrl);
+//            List<String> oldFileURLs = productVariant.getImageURLs();
 
             // Kiểm tra xem variant đã có ảnh trước đó chưa, nếu có thì nối thêm vào danh sách cũ
-            if (oldFileURLs != null) {
-                fileURLs.addAll(oldFileURLs);
-            }
-
-            productVariant.setImageURLs(fileURLs);
-            productVariantsRepository.save(productVariant);
+//            if (oldFileURLs != null) {
+//                fileURLs.addAll(oldFileURLs);
+//            }
+//
+//            productVariant.setImageURLs(fileURLs);
+//            productVariantsRepository.save(productVariant);
 
             for (File file : fileList) {
                 file.delete();
             }
             // Trả về kết quả với biến thể đã được cập nhật
-            return new ResponseEntity<>( productVariant, HttpStatus.CREATED);
+            return new ResponseEntity<>( fileURLs, HttpStatus.CREATED);
         }catch (Exception e){
            return new ResponseEntity<>( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
        }

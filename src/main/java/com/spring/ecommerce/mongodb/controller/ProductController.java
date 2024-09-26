@@ -75,7 +75,7 @@ public class ProductController {
                 file.transferTo(localFile);
                 fileList.add(localFile);
             }
-            List<String> fileURLs = s3Services.upload(productId,fileList,keyUrl);
+            List<String> fileURLs = s3Services.upload(fileList,keyUrl);
             List<String> oldFileURLs = product.getImageURL();
             if (oldFileURLs != null) {
                 fileURLs.addAll(oldFileURLs);
@@ -114,52 +114,52 @@ public class ProductController {
     }
 
     /** UPLOAD VARIANT IMAGE */
-    @RequestMapping(value = "/{productId}/variant/{variantId}/upload/image",method = RequestMethod.POST)
-    public ResponseEntity uploadVariantImage(@PathVariable("productId") String productId, @PathVariable("variantId") String variantId, @RequestParam("files") MultipartFile[] files) {
-        List<File> fileList = new ArrayList<>();
-        String keyUrl = "variants/" + variantId + "/" ;
-
-        try {
-            Product product = productServices.findById(productId).orElseThrow(()->new RuntimeException("Product with id : " + productId + " not found"));
-            ProductVariants variant = product.getVariants().stream()
-                    .filter(v -> v.getId().equals(variantId))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Variant with id : " + variantId + " not found"));
-            for (MultipartFile file : files) {
-                File localFile = File.createTempFile("image_", file.getOriginalFilename());
-                file.transferTo(localFile);
-                fileList.add(localFile);
-            }
-
-            // Upload các file lên S3 và lấy danh sách các URL đã upload
-            List<String> fileURLs = s3Services.upload(variantId, fileList, keyUrl);
-            List<String> oldFileURLs = variant.getImageURLs();
-
-            // Kiểm tra xem variant đã có ảnh trước đó chưa, nếu có thì nối thêm vào danh sách cũ
-            if (oldFileURLs != null) {
-                fileURLs.addAll(oldFileURLs);
-            }
-
-            variant.setImageURLs(fileURLs);
-
-            // Lưu lại sản phẩm với thông tin biến thể đã được cập nhật
-            productVariantsRepository.save(variant);
-            productServices.save(product); // Lưu lại toàn bộ sản phẩm nếu cần
-
-            // Xóa các file tạm sau khi upload
-            for (File file : fileList) {
-                file.delete();
-            }
-            // Trả về kết quả với biến thể đã được cập nhật
-            return new ResponseEntity<>(product, HttpStatus.CREATED);
-
-
-
-
-        }catch (IOException e){
-            throw new RuntimeException(e.getMessage());
-        }
-    }
+//    @RequestMapping(value = "/{productId}/variant/{variantId}/upload/image",method = RequestMethod.POST)
+//    public ResponseEntity uploadVariantImage(@PathVariable("productId") String productId, @PathVariable("variantId") String variantId, @RequestParam("files") MultipartFile[] files) {
+//        List<File> fileList = new ArrayList<>();
+//        String keyUrl = "variants/" + variantId + "/" ;
+//
+//        try {
+//            Product product = productServices.findById(productId).orElseThrow(()->new RuntimeException("Product with id : " + productId + " not found"));
+//            ProductVariants variant = product.getVariants().stream()
+//                    .filter(v -> v.getId().equals(variantId))
+//                    .findFirst()
+//                    .orElseThrow(() -> new RuntimeException("Variant with id : " + variantId + " not found"));
+//            for (MultipartFile file : files) {
+//                File localFile = File.createTempFile("image_", file.getOriginalFilename());
+//                file.transferTo(localFile);
+//                fileList.add(localFile);
+//            }
+//
+//            // Upload các file lên S3 và lấy danh sách các URL đã upload
+//            List<String> fileURLs = s3Services.upload(variantId, fileList, keyUrl);
+//            List<String> oldFileURLs = variant.getImageURLs();
+//
+//            // Kiểm tra xem variant đã có ảnh trước đó chưa, nếu có thì nối thêm vào danh sách cũ
+//            if (oldFileURLs != null) {
+//                fileURLs.addAll(oldFileURLs);
+//            }
+//
+//            variant.setImageURLs(fileURLs);
+//
+//            // Lưu lại sản phẩm với thông tin biến thể đã được cập nhật
+//            productVariantsRepository.save(variant);
+//            productServices.save(product); // Lưu lại toàn bộ sản phẩm nếu cần
+//
+//            // Xóa các file tạm sau khi upload
+//            for (File file : fileList) {
+//                file.delete();
+//            }
+//            // Trả về kết quả với biến thể đã được cập nhật
+//            return new ResponseEntity<>(product, HttpStatus.CREATED);
+//
+//
+//
+//
+//        }catch (IOException e){
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
 
 
 

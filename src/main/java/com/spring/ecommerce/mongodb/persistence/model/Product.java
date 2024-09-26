@@ -1,12 +1,10 @@
 package com.spring.ecommerce.mongodb.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.spring.ecommerce.mongodb.persistence.model.variants.ProductVariants;
 import com.spring.ecommerce.mongodb.persistence.model.variants.VariantType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
@@ -50,7 +48,10 @@ public class Product {
 
     @DocumentReference
     private List<ProductVariants> variants ;
+
     private Map<VariantType, List<String>> options;
+
+    private Map<String,String> specifications;
 
     @JsonIgnore
     private int viewCount;

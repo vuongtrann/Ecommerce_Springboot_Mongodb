@@ -1,6 +1,7 @@
 package com.spring.ecommerce.mongodb.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.spring.ecommerce.mongodb.persistence.model.Specification.SpecificationTypes;
 import com.spring.ecommerce.mongodb.persistence.model.variants.VariantType;
 import lombok.*;
 
@@ -34,12 +35,15 @@ public class Category {
     private String icon;
     private Banners banner;
     private List<VariantType> variantTypes;
-    private List<Product> featureProducts = new ArrayList<>();
+    //private List<Product> featureProducts = new ArrayList<>();
     private int noOfViews;
     private int noOfSold;
     @DocumentReference
     private List<Category> subCategories = new ArrayList<>();
     @Transient
     private List<String> parentId = new ArrayList<>();
+
+    @DocumentReference
+    private List<SpecificationTypes> specificationTypes;
 
 }

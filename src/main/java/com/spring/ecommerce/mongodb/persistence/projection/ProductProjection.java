@@ -7,7 +7,7 @@ public interface ProductProjection {
     String getName();
     List<String> getImageURL();
     String getPrimaryImageURL();
-    String getDescription();
+    //String getDescription();
     double getRating();
     int getNoOfReviews();
     String getBrandName();

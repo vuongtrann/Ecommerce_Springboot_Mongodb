@@ -230,7 +230,7 @@ public class S3ServicesImpl implements S3Services {
 
 
 
-    public List<String> upload(String id, List<File> files, String keyUrl) throws IOException {
+    public List<String> upload(List<File> files, String keyUrl) throws IOException {
         if (files.size() > MAX_FILE_COUNT) {
             throw new IllegalArgumentException("File count exceeds limit of " + MAX_FILE_COUNT);
         }
