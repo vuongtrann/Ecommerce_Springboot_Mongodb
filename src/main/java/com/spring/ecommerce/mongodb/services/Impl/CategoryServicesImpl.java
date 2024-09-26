@@ -3,7 +3,9 @@ package com.spring.ecommerce.mongodb.services.Impl;
 import com.spring.ecommerce.mongodb.persistence.dto.CategoryForm;
 import com.spring.ecommerce.mongodb.persistence.model.Banners;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
+import com.spring.ecommerce.mongodb.persistence.model.Specification.SpecificationTypes;
 import com.spring.ecommerce.mongodb.repository.CategoryRepository;
+import com.spring.ecommerce.mongodb.repository.SpecificationTypeRepository;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.util.*;
 public class CategoryServicesImpl implements CategoryServices {
 
     private final CategoryRepository categoryRepository;
+    private final SpecificationTypeRepository specificationTypeRepository;
 //    private ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 
@@ -118,6 +121,26 @@ public class CategoryServicesImpl implements CategoryServices {
         }
     }
 
+    @Override
+    public Category addSpecificationType(String categoryId, SpecificationTypes specificationTypes) {
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category!=null){
+            specificationTypes.setCategoryId(categoryId);
+            SpecificationTypes savedSpecificationTypes = specificationTypeRepository.save(specificationTypes);
+            category.getSpecificationTypes().add(savedSpecificationTypes);
+            return categoryRepository.save(category);
+        }
+        return null;
+    }
+
+    @Override
+    public List<SpecificationTypes> getSpecificationTypesByCategoryID(String categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category!=null){
+            return category.getSpecificationTypes();
+        }
+        return null;
+    }
 
 
 //    @Override

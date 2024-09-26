@@ -3,6 +3,7 @@ package com.spring.ecommerce.mongodb.services;
 import com.spring.ecommerce.mongodb.persistence.dto.CategoryForm;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
 import com.spring.ecommerce.mongodb.persistence.model.Product;
+import com.spring.ecommerce.mongodb.persistence.model.Specification.SpecificationTypes;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,4 +22,7 @@ public interface CategoryServices {
     public Category addCollection (String name);
     public List<Category> getAllCollections();
 
+    /** SpecificationType */
+    public Category addSpecificationType(String categoryId, SpecificationTypes specificationTypes);
+    public List<SpecificationTypes> getSpecificationTypesByCategoryID(String categoryId);
 }
