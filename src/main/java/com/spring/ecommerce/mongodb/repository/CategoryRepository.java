@@ -44,7 +44,7 @@ public interface CategoryRepository extends MongoRepository<Category, String> {
     List<Category> findTopCategorie(int limit);
 
 
-
+    /** Get all Collections */
     @Aggregation(pipeline = {
             "{$match:  {isCollection:  true}}"
     })

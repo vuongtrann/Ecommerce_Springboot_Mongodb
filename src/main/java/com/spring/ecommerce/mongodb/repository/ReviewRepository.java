@@ -12,60 +12,37 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends MongoRepository<Review, String> {
     @Aggregation(pipeline = {
-            "{$match: {}}"
+            "{$match: { rating: {$in: ?0}}}"
     })
-    List<Review>findAll();
+    List<Review>findAll(int[] a);
 
 @Aggregation(pipeline = {
         "{ $match: { _id: ?0 } }"
 })
     public Optional<Review> findById(String id);
 
-//
-//    @Aggregation(pipeline = {
-//            "{$match: { product: ObjectId(?0)}}",
-//            "{$project: {_id: 1, rating: 1, title: 1,description: 1, createdAt: 1 , customer: 1 }}",
-//            "{$sort: {rating:  -1, createdAt:  -1} }",
-//            "{$limit :  ?1}"
-//    })
-
 
     @Aggregation(pipeline = {
-            "{$match: {product: ObjectId(?0)}}"
+            "{$match: {product : ObjectId(?0),   rating: {$in: ?1}   }}"
 
-            ,"{$lookup: {from: 'product',localField: 'product', foreignField: '_id', as: 'productsDetail'}}"
+            ,"{$lookup: {from: 'product', localField: 'product', foreignField: '_id', as: 'productsDetail'}}"
             ,"{$unwind: '$productsDetail'}"
 
-            ,"{$lookup: { from: 'variant_options', localField: 'productsDetail.variants',foreignField: '_id',as: 'variantDetails'}}"
-            ,"{$unwind: '$variantDetails'}"
+            ,"{$lookup: {from: 'variant_options', localField: 'productsDetail.variants', foreignField: '_id', as: 'variantDetails'}}"
 
-            ,"{$lookup: {from: 'customer',localField: 'customer',foreignField: '_id',as:'customerDetails'}}"
+            ,"{$lookup: {from: 'customer', localField: 'customer', foreignField: '_id', as: 'customerDetails'}}"
             ,"{$unwind: '$customerDetails'}"
 
-            ,"{$project: {_id: 1, 'rating': 1, 'title':1, 'description': 1, 'createdAt':1" +
-            ",'productsDetail._id': 1, 'productsDetail.name': 1, 'variantDetails.variantTypes': 1, 'variantDetails.value': 1" +
-            ",'customerDetails._id' :1,'customerDetails.fullName':1 }}"
-            ,"{$limit: ?1}"
+            ,"{$project: {_id: 1, 'rating': 1, 'title': 1, 'description': 1, 'createdAt': 1"
+            + ",'productsDetail._id': 1, 'productsDetail.name': 1"
+            + ",'variantDetails': { $map: { input: '$variantDetails', as: 'variant', in: { 'variantTypes': '$$variant.variantTypes', 'value': '$$variant.value' } } }"
+            + ",'customerDetails._id': 1, 'customerDetails.fullName': 1 }}"
+
+            ,"{$sort: {?2 :  ?3} }"
+            ,"{$limit: ?4}"
     })
-    List<ReviewForm> findByProductId(String productId, int limit);
-
-
-
-//  @Aggregation(pipeline = {
-//            "{$match: {product: ObjectId(?0)}}"
-//
-//            ,"{$lookup: {from: 'product',localField: 'product', foreignField: '_id', as: 'productsDetail'}}"
-//
-//            ,"{$lookup: { from: 'variant_options', localField: 'productsDetail.variants',foreignField: '_id',as: 'variantDetails'}}"
-//
-//            ,"{$lookup: {from: 'customer',localField: 'customer',foreignField: '_id',as:'customerDetails'}}"
-//
-//            ,"{$project: {_id: 1, 'rating': 1, 'title':1, 'description': 1, 'createdAt':1" +
-//            ",'productsDetail._id': 1, 'productsDetail.name': 1, 'variantDetails.variantTypes': 1, 'variantDetails.value': 1" +
-//            ",'customerDetails._id' :1,'customerDetails.fullName':1 }}"
-//            ,"{$limit: ?1}"
-//    })
-//    List<Review> findByProductId(String productId, int limit);
+    List<ReviewForm> findByProductId(String productId,List<Integer> stars ,String sortBy, int order , int limit   );
+//    List<ReviewForm> findByProductId(String productId, int limit);
 
 
 

@@ -1,6 +1,8 @@
 package com.spring.ecommerce.mongodb.controller;
 
+import com.spring.ecommerce.mongodb.persistence.model.Category;
 import com.spring.ecommerce.mongodb.persistence.model.Collection;
+import com.spring.ecommerce.mongodb.services.CategoryServices;
 import com.spring.ecommerce.mongodb.services.CollectionServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,20 +16,29 @@ import java.util.List;
 @RequestMapping("api/v1/collections")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class CollectionController {
-    private final CollectionServices collectionServices;
 
-    @RequestMapping(value = "",method = RequestMethod.GET)
-    public List<Collection> getCollections() {
-        return collectionServices.findAllCollections();
+    private final CategoryServices categoryServices;
+
+    /** Add Collections */
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<Category> addCategory(@RequestParam String name) {
+        try{
+            return new ResponseEntity<>(categoryServices.addCollection(name), HttpStatus.OK);
+        }catch (Exception e) {}
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @RequestMapping(value = "",method = RequestMethod.POST)
-    public ResponseEntity addCollection(@RequestBody Collection collection) {
-        return new ResponseEntity<>(collectionServices.addCollection(collection), HttpStatus.CREATED);
+    /** Get All Collections */
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public ResponseEntity<List<Category>> getAllCollections () {
+        try{
+            return new ResponseEntity<>(categoryServices.getAllCollections(), HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @RequestMapping(value = "/{collectionId}",method = RequestMethod.GET)
-    public ResponseEntity getCollection(@PathVariable String collectionId) {
-        return new ResponseEntity<>(collectionServices.findById(collectionId), HttpStatus.OK);
-    }
+
+
+
 }

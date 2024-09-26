@@ -1,12 +1,12 @@
 package com.spring.ecommerce.mongodb.persistence.dto;
 
-import com.spring.ecommerce.mongodb.persistence.model.Review;
-import com.spring.ecommerce.mongodb.persistence.model.variants.VariantType;
+
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -21,9 +21,8 @@ public class ReviewForm {
     private String description;
     private int rating;
     private LocalDateTime createdAt;
-
     private ProductDetail productsDetail;
-    private VariantDetail variantDetails;
+    private List<VariantDetails> variantDetails = new ArrayList<>() ;
     private CustomerDetail customerDetails;
 
     @Getter
@@ -38,13 +37,14 @@ public class ReviewForm {
 
     @Getter
     @Setter
-    @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class VariantDetail {
+    public static class VariantDetails {
         private String variantTypes;
         private String value;
     }
+
+
 
     @Getter
     @Setter

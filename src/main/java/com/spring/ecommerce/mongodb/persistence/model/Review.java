@@ -25,6 +25,8 @@ public class Review {
     private int rating;
     private String title;
     private String description ;
+    private boolean isRecomendation ;
+    private boolean isOnTimeDelivery;
     private LocalDateTime createdAt;
 
 

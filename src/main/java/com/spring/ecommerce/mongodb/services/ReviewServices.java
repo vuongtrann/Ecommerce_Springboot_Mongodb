@@ -1,6 +1,7 @@
 package com.spring.ecommerce.mongodb.services;
 
 import com.spring.ecommerce.mongodb.persistence.dto.ReviewForm;
+import com.spring.ecommerce.mongodb.persistence.model.ListStar;
 import com.spring.ecommerce.mongodb.persistence.model.Review;
 
 import java.util.List;
@@ -11,5 +12,5 @@ public interface ReviewServices {
     public Review save(Review review);
     public void deleteById(String id);
     public Review update(Review review);
-    public List<ReviewForm> findByProductId(String productId, int limit);
+    public List<ReviewForm> findByProductId(String productId, ListStar stars ,String sortBy, String direction, int limit );
 }

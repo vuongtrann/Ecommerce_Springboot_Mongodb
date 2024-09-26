@@ -1,6 +1,7 @@
 package com.spring.ecommerce.mongodb.controller;
 
 import com.spring.ecommerce.mongodb.persistence.dto.ReviewForm;
+import com.spring.ecommerce.mongodb.persistence.model.ListStar;
 import com.spring.ecommerce.mongodb.persistence.model.Review;
 import com.spring.ecommerce.mongodb.services.Impl.ReviewServicesImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class ReviewController {
    @RequestMapping(value = "/products/review", method = RequestMethod.POST)
     public ResponseEntity<Review> createReview(@RequestBody Review review) {
        try {
+           if (review.getRating() > 5){
+               return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+           }
            return new ResponseEntity<>(reviewService.save(review), HttpStatus.CREATED);
        }catch (Exception e){
            e.printStackTrace();
@@ -56,13 +60,17 @@ public class ReviewController {
     /** Find by productId*/
     @RequestMapping(value = "/review/product/{productId}", method = RequestMethod.GET)
     public ResponseEntity<List<ReviewForm>> getReviewByProductId(
+            @RequestBody ListStar stars,
             @PathVariable String productId,
+            @RequestParam(value = "sortBy", required = false) String sortBy,
+            @RequestParam(value = "direction", defaultValue = "DESC") String direction,
             @RequestParam(value = "limit", defaultValue = "20") int limit) {
         try{
             if (productId== null || productId.isEmpty()){
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>(reviewService.findByProductId(productId, limit), HttpStatus.OK);
+
+            return new ResponseEntity<>(reviewService.findByProductId( productId, stars , sortBy, direction,  limit), HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
         }return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
