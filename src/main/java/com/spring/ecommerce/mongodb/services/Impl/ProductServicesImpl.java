@@ -35,7 +35,6 @@ public class ProductServicesImpl implements ProductServices {
     private final ProductVariantsRepository productVariantsRepository;
 
 
-    private final CollectionServices collectionServices;
 
 
     @Override
@@ -262,6 +261,8 @@ public class ProductServicesImpl implements ProductServices {
 
     }
 
+
+
     public Product updateRating(String productId, double rating) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(()-> new RuntimeException("Product not found"));
@@ -270,7 +271,6 @@ public class ProductServicesImpl implements ProductServices {
 
         return productRepository.save(product);
     }
-
 
 
 

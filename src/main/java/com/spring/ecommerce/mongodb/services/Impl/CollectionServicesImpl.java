@@ -1,8 +1,11 @@
 package com.spring.ecommerce.mongodb.services.Impl;
 
-import com.spring.ecommerce.mongodb.persistence.model.Collection;
-import com.spring.ecommerce.mongodb.repository.CollectionRepository;
+import com.spring.ecommerce.mongodb.persistence.model.Category;
+import com.spring.ecommerce.mongodb.persistence.model.Product;
+import com.spring.ecommerce.mongodb.repository.CategoryRepository;
+import com.spring.ecommerce.mongodb.repository.ProductRepository;
 import com.spring.ecommerce.mongodb.services.CollectionServices;
+import com.spring.ecommerce.mongodb.services.ProductServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,31 +16,73 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CollectionServicesImpl implements CollectionServices {
 
-    private final CollectionRepository collectionRepository;
+    private final CategoryRepository categoryRepository;
+    private final ProductServices productServices;
+
+
     @Override
-    public List<Collection> findAllCollections() {
-        return collectionRepository.findAll();
+    public List<Category> findAllCollections() {
+        try {
+            return categoryRepository.findCollections();
+        }catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+
+    @Override
+    public Optional<Category> findCollectionById(String id) {
+       try{
+           return categoryRepository.findCollectionById(id);
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+       return null;
     }
 
     @Override
-    public Optional<Collection> findById(String id) {
-       return collectionRepository.findById(id);
+    public Category addCollection(Category collection) {
+       try{
+           collection.setCreatedAt(LocalDateTime.now());
+           Category category = categoryRepository.save(collection);
+           return category;
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+       return null;
     }
 
-    @Override
-    public Collection addCollection(Collection collection) {
-        collection.setCreatedAt(LocalDateTime.now());
-        return collectionRepository.save(collection);
-    }
+
+
+
+
+
 
     @Override
-    public Collection updateCollection(Collection collection) {
+    public Category updateCollection(Category collection) {
         collection.setUpdatedAt(LocalDateTime.now());
-        return collectionRepository.save(collection);
+        return categoryRepository.save(collection);
     }
 
     @Override
-    public void deleteCollection(Collection collection) {
-        collectionRepository.delete(collection);
+    public void deleteCollection(Category collection) {
+        categoryRepository.delete(collection);
     }
+
+
+    @Override
+    public Product addProduct (String collectionId, String productId) {
+        try{
+            Product product = productServices.findById(productId).orElseThrow(()-> new RuntimeException("Product not found"));
+            Category collection = categoryRepository.findCollectionById(collectionId).orElseThrow(()-> new RuntimeException("Collection not found"));
+            product.getCollections().add(collection);
+            return productServices.save(product);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
 }

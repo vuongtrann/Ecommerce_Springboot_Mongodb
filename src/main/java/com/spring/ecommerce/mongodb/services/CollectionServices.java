@@ -1,16 +1,18 @@
 package com.spring.ecommerce.mongodb.services;
 
-import com.spring.ecommerce.mongodb.persistence.model.Collection;
+import com.spring.ecommerce.mongodb.persistence.model.Category;
+import com.spring.ecommerce.mongodb.persistence.model.Product;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CollectionServices {
-    public List<Collection> findAllCollections();
-    public Optional<Collection> findById(String id);
-    public Collection addCollection(Collection collection);
-    public Collection updateCollection(Collection collection);
-    public void deleteCollection(Collection collection);
+    public List<Category> findAllCollections();
+    public Optional<Category> findCollectionById(String id);
+    public Category addCollection(Category collection);
+    public Category updateCollection(Category collection);
+    public void deleteCollection(Category collection);
+    public Product addProduct (String collectionId,String productId);
 
 
 }

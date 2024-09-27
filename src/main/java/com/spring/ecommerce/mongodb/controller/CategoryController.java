@@ -63,5 +63,53 @@ public class CategoryController {
 
 
 
+    /** Add Sub Category */
+    @RequestMapping(value = "/{parentId}/sub", method = RequestMethod.POST)
+    public ResponseEntity<Category> addSubCategory(@PathVariable(value = "parentId") String parentId,@RequestParam(value = "childId") String childId ) {
+        try{
+            if (parentId.isEmpty() || childId.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(categoryServices.addSubCategory(parentId,childId), HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+
+    /** Get Sub Category */
+    @RequestMapping(value = "/{categoryId}/sub", method = RequestMethod.GET)
+    public ResponseEntity<List<Category>> getSubCategory(@PathVariable String categoryId) {
+        try{
+            if (categoryId.isEmpty()){
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(categoryServices.getSubCategory(categoryId), HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+
+    /** Delete Sub Category */
+    @RequestMapping(value = "/{parentId}/sub", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteSubCategory(@PathVariable(value = "parentId") String parentId,@RequestParam(value = "childId") String childId ) {
+        try{
+            if (parentId.isEmpty() || childId.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            categoryServices.deleteSubCategory(parentId,childId);
+            return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
 
 }

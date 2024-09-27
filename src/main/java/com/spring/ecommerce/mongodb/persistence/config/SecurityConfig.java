@@ -33,8 +33,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer:: disable)
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers(HttpMethod.GET,"/api/auth/exists").permitAll()
-                        .requestMatchers( PUBLIC_ENDPOINTS).permitAll()
+//                        .requestMatchers(HttpMethod.GET,"/api/auth/exists").permitAll()
+//                        .requestMatchers( PUBLIC_ENDPOINTS).permitAll()
 
 //                        .anyRequest().authenticated()
                         .anyRequest().permitAll()

@@ -98,28 +98,57 @@ public class CategoryServicesImpl implements CategoryServices {
     }
 
     @Override
-    public Category addCollection(String name) {
-        Category category = new Category();
-        category.setName(name);
-        category.setCreatedAt(LocalDateTime.now());
-        category.setCollection(true);
-        category.setActive(true);
+    public List<Category> getSubCategory(String parentId) {
         try {
-            return categoryRepository.save(category);
+            if (parentId.isEmpty()) {
+                throw new RuntimeException("Parent id is empty");
+            }
+            return categoryRepository.findSubCategory(parentId);
         }catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            e.printStackTrace();
         }
+        return null;
     }
-
 
     @Override
-    public List<Category> getAllCollections() {
-        try {
-            return categoryRepository.findCollections();
+    public Category addSubCategory(String parentId, String childId) {
+        try{
+            if (parentId.isEmpty() || childId.isEmpty()) {
+                throw new RuntimeException("Parent id or childId is empty");
+            }
+            if (! categoryRepository.existsById(parentId) || ! categoryRepository.existsById(childId)) {
+                throw new RuntimeException("Category not found ");
+            }
+            Category category = categoryRepository.findByIdCategory(parentId).orElseThrow(() -> new RuntimeException("Parent not found with id : " + parentId));
+            category.getSubCategories().add(categoryRepository.findByIdCategory(childId).get());
+
+            return categoryRepository.save(category);
         }catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            e.printStackTrace();
         }
+        return null;
     }
+
+
+
+  @Override
+    public void deleteSubCategory(String parentId, String childId) {
+        try{
+            if (parentId.isEmpty() || childId.isEmpty()) {
+                throw new RuntimeException("Parent id or childId is empty");
+            }
+            if (! categoryRepository.existsById(parentId) || ! categoryRepository.existsById(childId)) {
+                throw new RuntimeException("Category not found ");
+            }
+            Category category = categoryRepository.findByIdCategory(parentId).orElseThrow(() -> new RuntimeException("Parent not found with id : " + parentId));
+            category.getSubCategories().remove(categoryRepository.findByIdCategory(childId).get());
+            categoryRepository.save(category);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     @Override
     public Category addSpecificationType(String categoryId, SpecificationTypes specificationTypes) {
@@ -143,21 +172,4 @@ public class CategoryServicesImpl implements CategoryServices {
     }
 
 
-//    @Override
-//    public Category addParent(CategoryForm form) {
-//       List<Category> items = form.getSubCategories().stream()
-//               .map(item ->{
-//                   Optional<Category> optional = findById(String.valueOf(item));
-//                   if(optional.isPresent()) {
-//                       Category category = optional.get();
-//                       return category;
-//                   }
-//                   return null;
-//               }).toList();
-//       Category category = new Category();
-////       Category category = new Category(form.getName(),form.getLevel(),items);
-//       category.setCreatedAt(LocalDateTime.now());
-//       category = save(category);
-//       return category;
-//    }
 }

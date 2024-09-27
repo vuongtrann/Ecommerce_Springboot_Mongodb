@@ -1,11 +1,14 @@
 package com.spring.ecommerce.mongodb.services.AuthService.Impl;
 
+import com.spring.ecommerce.mongodb.persistence.Enum.Role;
 import com.spring.ecommerce.mongodb.persistence.model.Auth.Account;
 import com.spring.ecommerce.mongodb.persistence.model.Customer;
 import com.spring.ecommerce.mongodb.repository.AuthRepository.AccountRepository;
 import com.spring.ecommerce.mongodb.services.AuthService.AccountService;
 import com.spring.ecommerce.mongodb.services.Impl.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
@@ -31,13 +34,20 @@ public class AccountServiceImpl implements AccountService {
                 throw new AccountException("Username or password cannot be empty");
             }
             else {
-                account.setEmail(account.getEmail().trim());
-                account.setPassword(account.getPassword().trim());
 
-                Customer customer = new Customer();
-                customer.setEmail(account.getEmail());
-                customer.setFullName(account.getFullName());
-                customer.setPhone(account.getPhone());
+                account.setEmail(account.getEmail().trim());
+                PasswordEncoder passwordEndcoder = new BCryptPasswordEncoder(10);
+                account.setPassword(passwordEndcoder.encode(account.getPassword()).trim());
+
+
+
+                Customer customer = new Customer(account);
+//
+//                customer.setEmail(account.getEmail());
+//                customer.setFullName(account.getFullName());
+//                customer.setPhone(account.getPhone());
+//                customer.getRoles().add(Role.ROLE_BUYER.name());
+//
                 customerService.saveCustomer(customer);
 
                 account.setCustomerId(customer.getId());

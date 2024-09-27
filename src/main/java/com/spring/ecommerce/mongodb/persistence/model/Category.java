@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 
 public class Category {
     @Id
@@ -45,5 +45,7 @@ public class Category {
 
     @DocumentReference
     private List<SpecificationTypes> specificationTypes;
+
+
 
 }

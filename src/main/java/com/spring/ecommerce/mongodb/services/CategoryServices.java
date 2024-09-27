@@ -17,10 +17,10 @@ public interface CategoryServices {
     public void delete(String id);
     public Category update(String categoryId,Category category);
     public List<Category> getTopCategory(int limit);
+    public List<Category> getSubCategory(String parentId);
+    public Category addSubCategory(String parentId, String childId);
+    public void deleteSubCategory(String parentId, String childId);
 
-    /** Collections */
-    public Category addCollection (String name);
-    public List<Category> getAllCollections();
 
     /** SpecificationType */
     public Category addSpecificationType(String categoryId, SpecificationTypes specificationTypes);

@@ -7,8 +7,10 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.spring.ecommerce.mongodb.persistence.model.Auth.Account;
 import com.spring.ecommerce.mongodb.persistence.model.Auth.Token;
+import com.spring.ecommerce.mongodb.persistence.model.Customer;
 import com.spring.ecommerce.mongodb.repository.AuthRepository.AccountRepository;
 import com.spring.ecommerce.mongodb.services.AuthService.AuthenticationService;
+import com.spring.ecommerce.mongodb.services.Impl.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,17 +32,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private CustomerServiceImpl customerService;
+
 
     @Override
-    public String authenticate(String email, String password) {
+    public Customer login (String email, String password) {
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException ("Email not found"));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         if (passwordEncoder.matches(password, account.getPassword())) {
-            String token = generateToken(email);
-            return token;
+            Customer customer = customerService.getCustomerById(account.getCustomerId());
+            customer.setToken( generateToken(email));
+
+            return customerService.saveCustomer(customer);
         }
-        return "Invalid account or password";
+        throw new RuntimeException( "Invalid account or password");
     }
 
     @Override

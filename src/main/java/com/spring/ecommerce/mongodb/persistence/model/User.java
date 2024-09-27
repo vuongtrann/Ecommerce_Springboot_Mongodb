@@ -8,7 +8,6 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-
 public abstract class User {
 
     private String fullName;
@@ -16,6 +15,7 @@ public abstract class User {
     private String phone;
     private String address;
     private List<String> roles;
+    private String token;
 
 
     public User(String fullName, String email, String phone, String address) {
@@ -23,5 +23,6 @@ public abstract class User {
         this.email = email;
         this.phone = phone;
         this.address = address;
+        this.token ="";
     }
 }

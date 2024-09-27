@@ -42,6 +42,9 @@ public class Product {
     private List<Category> categories;
 
     @DocumentReference
+    private List<Category> collections;
+
+    @DocumentReference
     private ProductDimensions dimensions;
 
     private boolean hasVariants;

@@ -18,18 +18,23 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends MongoRepository<Category, String> {
 
+
+    /** Get all Category */
     @Aggregation(pipeline = {
             " {$match: { isCollection: false, isFeature: false, isActive: true}}",
             "{$project: {_id: 1, name:  1}}"
     })
     List<Category> findAll();
 
+
+
+    /** Get  Category By Id */
     @Aggregation(pipeline = {
             "{$match: { _id: ?0}}"
     })
     Optional<Category> findByIdCategory(@Param("id") String id);
 
-
+    /** Get TOP  Category */
     @Aggregation(pipeline = {
             "{$lookup:{from: 'product', localField: '_id', foreignField: 'categories', as:  'product'}}"
             ,"{$unwind: '$product'}"
@@ -44,12 +49,6 @@ public interface CategoryRepository extends MongoRepository<Category, String> {
     List<Category> findTopCategorie(int limit);
 
 
-    /** Get all Collections */
-    @Aggregation(pipeline = {
-            "{$match:  {isCollection:  true}}"
-    })
-    List<Category> findCollections();
-
 
     /** Update Parent Category after delete*/
     @Modifying
@@ -57,4 +56,48 @@ public interface CategoryRepository extends MongoRepository<Category, String> {
     @Query(value = "{'subCategories': ?0}")
     @Update ( value = "{'$pull': {'subCategories': ?0}}" )
     void updateParents(String subCategoryId);
+
+
+
+
+    /** Get sub Category By Id of Parent  */
+
+    @Aggregation(pipeline = {
+            "{ $match: { _id: ?0 } }"
+            ,"{ $lookup: {from: 'category', localField: 'subCategories', foreignField: '_id', as: 'subCategoriesDetails' } }"
+            ,"{$unwind: '$subCategoriesDetails'  }"
+            ,"{ $project: { id: '$subCategoriesDetails._id', name: '$subCategoriesDetails.name', createdAt: '$subCategoriesDetails.createdAt', " +
+                            "updatedAt: '$subCategoriesDetails.updatedAt', icon: '$subCategoriesDetails.icon', banner: '$subCategoriesDetails.banner', " +
+                            "variantTypes: '$subCategoriesDetails.variantTypes', noOfViews: '$subCategoriesDetails.noOfViews'," +
+                            " noOfSold: '$subCategoriesDetails.noOfSold', active: '$subCategoriesDetails.isActive',    " +
+                            " feature: '$subCategoriesDetails.isFeature', collection: '$subCategoriesDetails.isCollection'" +
+//                                ", subCategories: '$subCategoriesDetails.subCategories' " +
+            "} }"
+
+    })
+    public List<Category> findSubCategory(String id);
+
+
+
+
+
+
+
+
+    /** Get all Collections */
+    @Aggregation(pipeline = {
+            "{$match:  {isCollection:  true}}"
+    })
+    List<Category> findCollections();
+
+
+
+    /** Get  Collections By Id  */
+    @Aggregation(pipeline = {
+            " {$match: { _id:  ?0 ,isCollection: true, isFeature: false, isActive: true}}",
+//            "{$project: {_id: 1, name:  1}}"
+    })
+    Optional<Category > findCollectionById(String id);
+
+
 }
