@@ -1,5 +1,6 @@
 package com.spring.ecommerce.mongodb.controller;
 
+import com.spring.ecommerce.mongodb.persistence.dto.CollectionForm;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
 import com.spring.ecommerce.mongodb.persistence.model.Product;
 import com.spring.ecommerce.mongodb.services.Impl.CollectionServicesImpl;
@@ -41,7 +42,7 @@ public class CollectionController {
 
     /** Add Product to Collection */
     @RequestMapping(value = "/{collectionId}/product/{productId}", method = RequestMethod.PUT)
-    public ResponseEntity<Product> addCollection(@PathVariable(value = "collectionId") String collectionId
+    public ResponseEntity<Product> addProductToCollection(@PathVariable(value = "collectionId") String collectionId
             , @PathVariable(value = "productId") String productId){
         try {
             if (productId.isEmpty() || collectionId.isEmpty()) {
@@ -55,6 +56,18 @@ public class CollectionController {
     }
 
 
+
+    @RequestMapping(value = "/{collectionId}/product/all", method = RequestMethod.GET)
+    public ResponseEntity<CollectionForm> getAllCollectionsByProductId(@PathVariable(value = "collectionId") String collectionId){
+        try{
+            if (collectionId.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(collectionServices.findAllProducts(collectionId),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
 

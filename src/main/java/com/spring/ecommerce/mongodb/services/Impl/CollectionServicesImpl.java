@@ -1,9 +1,9 @@
 package com.spring.ecommerce.mongodb.services.Impl;
 
+import com.spring.ecommerce.mongodb.persistence.dto.CollectionForm;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
 import com.spring.ecommerce.mongodb.persistence.model.Product;
 import com.spring.ecommerce.mongodb.repository.CategoryRepository;
-import com.spring.ecommerce.mongodb.repository.ProductRepository;
 import com.spring.ecommerce.mongodb.services.CollectionServices;
 import com.spring.ecommerce.mongodb.services.ProductServices;
 import lombok.RequiredArgsConstructor;
@@ -84,5 +84,18 @@ public class CollectionServicesImpl implements CollectionServices {
     }
 
 
+
+    @Override
+    public CollectionForm findAllProducts(String collectionId){
+        try{
+            if (collectionId.isEmpty()){
+                throw new RuntimeException("Collection id is empty");
+            }
+            return categoryRepository.findProductDetails(collectionId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

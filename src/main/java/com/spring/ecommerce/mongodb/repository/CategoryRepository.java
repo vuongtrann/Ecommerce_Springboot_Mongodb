@@ -1,6 +1,7 @@
 package com.spring.ecommerce.mongodb.repository;
 
 
+import com.spring.ecommerce.mongodb.persistence.dto.CollectionForm;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -99,5 +100,18 @@ public interface CategoryRepository extends MongoRepository<Category, String> {
     })
     Optional<Category > findCollectionById(String id);
 
+
+
+    /** Get Product by Collection Id*/
+        @Aggregation(pipeline = {
+               " {$match: {_id:  ObjectId(?0)}}"
+                ,"{$lookup: {from: 'product', localField: '_id', foreignField: 'collections', as: 'productDetails'} }"
+                ,"{$addFields: {total: {$size: '$productDetails'}}}"
+//                ,"{$unwind: '$productDetails'}"
+    //            ,"{$project : {_id: 1, name: 1, total: {$size: '$productDetails' }, productDetails: { _id': 1 , 'productDetails': {_id: 1, 'name': 1 ,rating: 1 }}
+                ,"{$project: { _id: 1, name: 1, total: 1, productDetails: 1 }}"
+
+        })
+        CollectionForm findProductDetails(String id);
 
 }

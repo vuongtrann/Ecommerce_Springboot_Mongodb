@@ -1,5 +1,6 @@
 package com.spring.ecommerce.mongodb.services;
 
+import com.spring.ecommerce.mongodb.persistence.dto.CollectionForm;
 import com.spring.ecommerce.mongodb.persistence.model.Category;
 import com.spring.ecommerce.mongodb.persistence.model.Product;
 
@@ -13,6 +14,6 @@ public interface CollectionServices {
     public Category updateCollection(Category collection);
     public void deleteCollection(Category collection);
     public Product addProduct (String collectionId,String productId);
-
+    public CollectionForm findAllProducts(String collectionId);
 
 }
