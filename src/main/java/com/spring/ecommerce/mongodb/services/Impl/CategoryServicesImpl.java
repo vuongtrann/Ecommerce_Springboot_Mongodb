@@ -45,10 +45,10 @@ public class CategoryServicesImpl implements CategoryServices {
                    .orElseThrow(() -> new RuntimeException("Banner not found"));
            category.setBanner(banners);
         }
-        category = categoryRepository.save(category);
+        Category savedCategory = categoryRepository.save(category);
 
         if (category.getParentId()!=null && !category.getParentId().isEmpty()) {
-            Category finalCategory = category;
+            Category finalCategory = savedCategory;
             category.getParentId().forEach(id -> {
                 Category parent = categoryRepository.findById(id).
                         orElseThrow(() -> new RuntimeException("Parent not found with id : " + id));
