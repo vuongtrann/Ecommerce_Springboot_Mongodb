@@ -168,15 +168,6 @@ public class CategoryServicesImpl implements CategoryServices {
         }
         return categoryRepository.save(category);
 
-
-
-//        if (category!=null){
-//            specificationTypes.setCategoryId(categoryId);
-//            SpecificationTypes savedSpecificationTypes = specificationTypeRepository.save(specificationTypes);
-//            category.getSpecificationTypes().add(savedSpecificationTypes);
-//            return categoryRepository.save(category);
-//        }
-//        return null;
     }
 
     @Override

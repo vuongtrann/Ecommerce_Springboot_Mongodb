@@ -14,7 +14,6 @@ import java.util.List;
 @Builder
 public class VariantOptions {
     @Id
-//    @JsonIgnore
     private String id;
     private String variantTypes;
     private String value;

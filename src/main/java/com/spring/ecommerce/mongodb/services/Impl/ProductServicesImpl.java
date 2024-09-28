@@ -112,7 +112,13 @@ public class ProductServicesImpl implements ProductServices {
 
                     // Nếu tìm thấy loại biến thể, tạo VariantOptions
                     if (variantType != null) {
-                        variantOptionsList.add(new VariantOptions(variantType.getType(), option.getValue()));
+                        VariantOptions variantOption = new VariantOptions(variantType.getType(), option.getValue());
+
+                        // Lưu VariantOptions và lấy lại đối tượng với id đã được gán
+                        variantOption = variantOptionsRepository.save(variantOption);
+
+                        // Thêm VariantOptions đã được lưu vào danh sách
+                        variantOptionsList.add(variantOption);
                     }
                 }
 
