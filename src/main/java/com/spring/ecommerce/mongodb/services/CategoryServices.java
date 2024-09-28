@@ -23,6 +23,6 @@ public interface CategoryServices {
 
 
     /** SpecificationType */
-    public Category addSpecificationType(String categoryId, SpecificationTypes specificationTypes);
+    public Category addSpecificationType(String categoryId, List<SpecificationTypes> specificationTypes);
     public List<SpecificationTypes> getSpecificationTypesByCategoryID(String categoryId);
 }

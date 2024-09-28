@@ -151,15 +151,32 @@ public class CategoryServicesImpl implements CategoryServices {
 
 
     @Override
-    public Category addSpecificationType(String categoryId, SpecificationTypes specificationTypes) {
-        Category category = categoryRepository.findById(categoryId).orElse(null);
-        if (category!=null){
-            specificationTypes.setCategoryId(categoryId);
-            SpecificationTypes savedSpecificationTypes = specificationTypeRepository.save(specificationTypes);
+    public Category addSpecificationType(String categoryId, List<SpecificationTypes> specificationTypes) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()->new RuntimeException("Category not found!"));
+        for (SpecificationTypes specificationType : specificationTypes){
+            Optional<SpecificationTypes> exstingSpecificationType = category.getSpecificationTypes().stream()
+                    .filter(vt-> vt.getSpecificationType().equalsIgnoreCase(specificationType.getSpecificationType()))
+                    .findFirst();
+            if (exstingSpecificationType.isPresent()){
+                System.out.println("Specification Type" + specificationType.getSpecificationType() + " already exists in category");
+                continue;
+            }
+            specificationType.setCategoryId(categoryId);
+            SpecificationTypes savedSpecificationTypes = specificationTypeRepository.save(specificationType);
+
             category.getSpecificationTypes().add(savedSpecificationTypes);
-            return categoryRepository.save(category);
         }
-        return null;
+        return categoryRepository.save(category);
+
+
+
+//        if (category!=null){
+//            specificationTypes.setCategoryId(categoryId);
+//            SpecificationTypes savedSpecificationTypes = specificationTypeRepository.save(specificationTypes);
+//            category.getSpecificationTypes().add(savedSpecificationTypes);
+//            return categoryRepository.save(category);
+//        }
+//        return null;
     }
 
     @Override

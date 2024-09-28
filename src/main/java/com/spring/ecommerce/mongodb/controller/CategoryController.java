@@ -1,6 +1,7 @@
 package com.spring.ecommerce.mongodb.controller;
 
 import com.spring.ecommerce.mongodb.persistence.model.Category;
+import com.spring.ecommerce.mongodb.persistence.model.Specification.SpecificationTypes;
 import com.spring.ecommerce.mongodb.persistence.model.variants.VariantTypes;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
 import com.spring.ecommerce.mongodb.services.VariantTypeServices;
@@ -129,6 +130,21 @@ public class CategoryController {
     @RequestMapping(value = "/{categoryId}/variant",method = RequestMethod.DELETE)
     public ResponseEntity removeVariantByCategoryId(@PathVariable("categoryId") String categoryId, @RequestBody List<VariantTypes> variantTypes){
         return new ResponseEntity<>(variantTypeServices.removeVariantType(categoryId,variantTypes),HttpStatus.OK);
+    }
+
+    /**Add Specification Type*/
+    @RequestMapping(value = "/{categoryId}/specificationType",method = RequestMethod.POST)
+    public ResponseEntity addSpecificationType(@PathVariable("categoryId") String categoryId, @RequestBody List<SpecificationTypes> specificationTypes){
+        return new ResponseEntity(categoryServices.addSpecificationType(categoryId,specificationTypes),HttpStatus.CREATED);
+    }
+    @RequestMapping(value = "/{categoryId}/specificationType", method = RequestMethod.GET)
+    public ResponseEntity getSpecificationType(@PathVariable("categoryId") String categoryId){
+        List<SpecificationTypes> specificationTypes = categoryServices.getSpecificationTypesByCategoryID(categoryId);
+        if (specificationTypes!=null){
+            return new ResponseEntity(specificationTypes,HttpStatus.OK);
+        }else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 
 
