@@ -18,6 +18,7 @@ public interface ProductServices {
     public Product addProduct(ProductForm form);
     public Product updateProduct(String productId, ProductForm form);
 
+    //public Product addProduct(Product form);
 
 
 }

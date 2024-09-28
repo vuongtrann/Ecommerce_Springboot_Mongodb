@@ -58,7 +58,7 @@ public class ProductController {
     }
 
     /**ADD NEW PRODUCT*/
-    @RequestMapping(value = "",method = RequestMethod.POST)
+    @PostMapping("")
     public Product addProduct(@RequestBody ProductForm product) {
         return productServices.addProduct(product);
     }

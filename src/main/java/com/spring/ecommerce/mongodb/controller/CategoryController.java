@@ -1,7 +1,9 @@
 package com.spring.ecommerce.mongodb.controller;
 
 import com.spring.ecommerce.mongodb.persistence.model.Category;
+import com.spring.ecommerce.mongodb.persistence.model.variants.VariantTypes;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
+import com.spring.ecommerce.mongodb.services.VariantTypeServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class CategoryController {
 
     private final CategoryServices categoryServices;
+    private final VariantTypeServices variantTypeServices;
 
     /**Get categories*/
     @RequestMapping(value = "",method = RequestMethod.GET)
@@ -110,6 +113,23 @@ public class CategoryController {
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+
+
+    /**VARIANT TYPE*/
+
+    @RequestMapping(value = "/{categoryId}/variant",method = RequestMethod.POST)
+    public ResponseEntity addVariantType(@PathVariable String categoryId,@RequestBody List<VariantTypes> variantTypes) {
+        return new ResponseEntity<>(variantTypeServices.addVariantType(categoryId,variantTypes),HttpStatus.CREATED);
+    }
+    @RequestMapping(value = "/{categoryId}/variant",method = RequestMethod.GET)
+    public ResponseEntity getVariantTypeByCategoryId(@PathVariable("categoryId") String categoryId){
+        return new ResponseEntity<>(variantTypeServices.getVariantTypeByCategoryId(categoryId),HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{categoryId}/variant",method = RequestMethod.DELETE)
+    public ResponseEntity removeVariantByCategoryId(@PathVariable("categoryId") String categoryId, @RequestBody List<VariantTypes> variantTypes){
+        return new ResponseEntity<>(variantTypeServices.removeVariantType(categoryId,variantTypes),HttpStatus.OK);
+    }
 
 
 }

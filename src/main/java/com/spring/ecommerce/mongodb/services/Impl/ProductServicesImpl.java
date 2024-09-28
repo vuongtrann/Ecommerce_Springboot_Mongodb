@@ -4,11 +4,10 @@ import com.spring.ecommerce.mongodb.persistence.dto.ProductForm;
 import com.spring.ecommerce.mongodb.persistence.model.*;
 import com.spring.ecommerce.mongodb.persistence.model.variants.ProductVariants;
 import com.spring.ecommerce.mongodb.persistence.model.variants.VariantOptions;
-import com.spring.ecommerce.mongodb.persistence.model.variants.VariantType;
+import com.spring.ecommerce.mongodb.persistence.model.variants.VariantTypes;
 import com.spring.ecommerce.mongodb.persistence.projection.ProductProjection;
 import com.spring.ecommerce.mongodb.repository.*;
 import com.spring.ecommerce.mongodb.services.CategoryServices;
-import com.spring.ecommerce.mongodb.services.CollectionServices;
 import com.spring.ecommerce.mongodb.services.ProductServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +33,8 @@ public class ProductServicesImpl implements ProductServices {
 
     private final ProductVariantsRepository productVariantsRepository;
 
+    private final VariantTypeRepository variantTypeRepository;
+
 
 
 
@@ -57,6 +58,7 @@ public class ProductServicesImpl implements ProductServices {
     public Optional<Product> findById(String id){
         return productRepository.findById(id);
     }
+
 
 
     @Override
@@ -86,21 +88,35 @@ public class ProductServicesImpl implements ProductServices {
                 items,
                 dimensions
         );
-        // xu ly variant
-        if (Boolean.TRUE.equals(form.isHasVariants()) && form.getVariants() != null) {
+
+        if (form.isHasVariants() && form.getVariants() != null) {
             product.setOptions(form.getOptions());
             List<ProductVariants> newVariants = new ArrayList<>();
 
-            // Tạo các biến thể mới từ form
+            List<VariantTypes> availableVariantTypes = new ArrayList<>();
+            for (Category category : items) {
+                // Giả sử mỗi category có một danh sách các VariantTypes
+                availableVariantTypes.addAll(category.getVariantTypes());
+            }
+            // Tạo biến thể từ form
             for (ProductVariants variantForm : form.getVariants()) {
-                // Tạo danh sách VariantOptions dựa trên options từ form
-                List<VariantOptions> variantOptionsList = Arrays.asList(
-                        new VariantOptions(VariantType.COLOR, variantForm.getVariantOptions().get(0).getValue()),
-                        new VariantOptions(VariantType.RAM, variantForm.getVariantOptions().get(1).getValue()),
-                        new VariantOptions(VariantType.STORAGE, variantForm.getVariantOptions().get(2).getValue())
-                );
-                variantOptionsRepository.saveAll(variantOptionsList);
-                // Tạo mới biến thể
+                List<VariantOptions> variantOptionsList = new ArrayList<>();
+
+                // Tạo danh sách VariantOptions dựa trên các tùy chọn
+                for (VariantOptions option : variantForm.getVariantOptions()) {
+                    // Tìm VariantTypes tương ứng với loại từ danh sách VariantTypes của các Category
+                    VariantTypes variantType = availableVariantTypes.stream()
+                            .filter(vt -> vt.getType().equalsIgnoreCase(option.getVariantTypes()))
+                            .findFirst()
+                            .orElse(null);
+
+                    // Nếu tìm thấy loại biến thể, tạo VariantOptions
+                    if (variantType != null) {
+                        variantOptionsList.add(new VariantOptions(variantType.getType(), option.getValue()));
+                    }
+                }
+
+                // Sau khi tất cả các VariantOptions được tạo xong, thêm vào biến thể
                 ProductVariants newVariant = new ProductVariants();
                 newVariant.setVariantOptions(variantOptionsList);
                 newVariant.setRating(variantForm.getRating());
@@ -115,10 +131,8 @@ public class ProductServicesImpl implements ProductServices {
                 newVariants.add(newVariant);
             }
 
-            // Lưu tất cả ProductVariants mới
+            // Lưu tất cả ProductVariants mới chỉ một lần
             productVariantsRepository.saveAll(newVariants);
-
-            // Cập nhật lại sản phẩm với thông tin biến thể mới
             product.setHasVariants(true);
             product.setVariants(newVariants);
         } else {
@@ -126,11 +140,9 @@ public class ProductServicesImpl implements ProductServices {
             product.setVariants(null);
         }
 
-
-        //Xu ly spetification
         product.setSpecifications(form.getSpecifications());
-        // Cập nhật thời gian tạo và lưu sản phẩm
         product.setCreatedAt(LocalDateTime.now());
+
         return productRepository.save(product);
     }
 
@@ -222,14 +234,14 @@ public class ProductServicesImpl implements ProductServices {
                         updatedVariants.add(variant); // Thêm vào danh sách biến thể đã cập nhật
                     }
                 } else {
-                    // Nếu biến thể không có ID, coi như tạo mới và thêm vào danh sách
-                    List<VariantOptions> variantOptionsList = Arrays.asList(
-                            new VariantOptions(VariantType.COLOR, variantForm.getVariantOptions().get(0).getValue()),
-                            new VariantOptions(VariantType.RAM, variantForm.getVariantOptions().get(1).getValue()),
-                            new VariantOptions(VariantType.STORAGE, variantForm.getVariantOptions().get(2).getValue())
-                    );
+//                    // Nếu biến thể không có ID, coi như tạo mới và thêm vào danh sách
+//                    List<VariantOptions> variantOptionsList = Arrays.asList(
+//                            new VariantOptions(VariantType.COLOR, variantForm.getVariantOptions().get(0).getValue()),
+//                            new VariantOptions(VariantType.RAM, variantForm.getVariantOptions().get(1).getValue()),
+//                            new VariantOptions(VariantType.STORAGE, variantForm.getVariantOptions().get(2).getValue())
+//                    );
                     ProductVariants newVariant = new ProductVariants();
-                    newVariant.setVariantOptions(variantOptionsList);
+                    //newVariant.setVariantOptions(variantOptionsList);
                     newVariant.setRating(variantForm.getRating());
                     newVariant.setSKU(variantForm.getSKU());
                     newVariant.setQuantityAvailable(variantForm.getQuantityAvailable());
