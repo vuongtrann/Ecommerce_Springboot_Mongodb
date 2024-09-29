@@ -3,9 +3,12 @@ package com.spring.ecommerce.mongodb.controller;
 import com.spring.ecommerce.mongodb.persistence.model.Customer;
 import com.spring.ecommerce.mongodb.repository.CustomerRepository;
 import com.spring.ecommerce.mongodb.services.Impl.CustomerServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/v1/customer")
 public class CustomerController {
+    private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
     @Autowired
     private CustomerServiceImpl customerService;
 
@@ -65,6 +69,11 @@ public class CustomerController {
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<List<Customer>> getAllCustomers() {
         try{
+
+            var authen = SecurityContextHolder.getContext().getAuthentication();
+            log.info("username: " + authen.getName());
+            authen.getAuthorities().forEach(authority -> log.info("authority: " + authority.getAuthority()));
+
             return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();

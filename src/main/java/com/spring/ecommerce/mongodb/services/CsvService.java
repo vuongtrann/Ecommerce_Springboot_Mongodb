@@ -6,11 +6,9 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.spring.ecommerce.mongodb.persistence.model.ImportCategoty;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +17,8 @@ import java.util.List;
     public class CsvService {
 
 
-        public List<ImportCategoty> readCategoriesFromCsv(String filePath) {
-            try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+        public List<ImportCategoty> readCategoriesFromCsv(MultipartFile file) {
+            try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
                 CsvToBean<ImportCategoty> csvToBean = new CsvToBeanBuilder<ImportCategoty>(reader)
                         .withType(ImportCategoty.class)
                         .withIgnoreLeadingWhiteSpace(true)

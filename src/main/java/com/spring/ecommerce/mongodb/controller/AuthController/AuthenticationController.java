@@ -5,6 +5,7 @@ import com.spring.ecommerce.mongodb.persistence.model.Auth.Token;
 import com.spring.ecommerce.mongodb.persistence.model.Customer;
 import com.spring.ecommerce.mongodb.services.AuthService.Impl.AccountServiceImpl;
 import com.spring.ecommerce.mongodb.services.AuthService.Impl.AuthenticationServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth/")
+@Slf4j
 public class AuthenticationController {
     @Autowired
     private AccountServiceImpl accountService;

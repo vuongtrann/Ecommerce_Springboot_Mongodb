@@ -28,12 +28,34 @@ public class SecurityConfig {
 
     };
 
+    private final String[] ADMIN_ENDPOINT = {
+
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer:: disable)
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers( PUBLIC_ENDPOINTS).permitAll()
+
+                                        // For Category
+                                .requestMatchers(HttpMethod.POST, "/api/v1/category/").hasAuthority("SCOPE_ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/category/{categoryId}/variants").hasAuthority("SCOPE_ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/api/v1/category/{categoryId}/sub").hasAuthority("SCOPE_ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/category/{categoryId}/sub").hasAuthority("SCOPE_ROLE_ADMIN")
+
+                                        // For Banners
+                                .requestMatchers(HttpMethod.POST, "/api/v1/banner/multi").hasAuthority("SCOPE_ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/api/v1/banner/multi").hasAuthority("SCOPE_ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/v1/banner/{bannerId}/update").hasAuthority("SCOPE_ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/v1/banner/{bannerId}/delete").hasAuthority("SCOPE_ROLE_ADMIN")
+
+
+                                        // For Customer
+                                .requestMatchers(HttpMethod.GET,"/api/v1/customer/all").hasAuthority("SCOPE_ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.POST,"/api/v1/customer").hasAuthority("SCOPE_ROLE_ADMIN")
+                                .requestMatchers(HttpMethod.DELETE,"/api/v1/customer/{customerId}/delete").hasAuthority("SCOPE_ROLE_ADMIN")
 
 //                        .anyRequest().authenticated()
                         .anyRequest().permitAll()
