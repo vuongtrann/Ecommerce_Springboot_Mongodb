@@ -31,11 +31,21 @@ public class Product {
 
     private Double rating = 0.0;
 
+
+    private String SKU;
+    private int quantityAvailable;
+    private int soldQuantity;
+    private double price;
+    private double salePrice;
+    private double MRSP;
+
+
     private int noOfReviews = 0;
 
     private String brandName;
 
     private String sellingTypes;
+
 
     @DocumentReference
     private List<Category> categories;
@@ -57,12 +67,6 @@ public class Product {
 
     @JsonIgnore
     private int viewCount;
-
-    @JsonIgnore
-    private int quantitySold;
-
-    @JsonIgnore
-    private int remainingQuantity;
 
     @JsonIgnore
     private LocalDateTime createdAt;

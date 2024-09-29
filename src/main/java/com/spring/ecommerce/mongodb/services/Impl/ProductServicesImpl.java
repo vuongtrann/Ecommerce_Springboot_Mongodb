@@ -69,6 +69,11 @@ public class ProductServicesImpl implements ProductServices {
                 .filter(Objects::nonNull) // Loại bỏ các category null
                 .collect(Collectors.toList());
 
+        List<Category> collections = form.getCollections().stream()
+                .map(collection -> categoryServices.findById(collection).orElse(null))
+                .filter(Objects::nonNull) // Loại bỏ các category null
+                .collect(Collectors.toList());
+
         // Tạo ProductDimensions
         ProductDimensions dimensions = new ProductDimensions(
                 form.getDimensions().getId(),
@@ -88,6 +93,18 @@ public class ProductServicesImpl implements ProductServices {
                 items,
                 dimensions
         );
+
+
+        product.setCollections(collections);
+        if(!form.isHasVariants()){
+            product.setSKU(form.getSKU());
+            product.setQuantityAvailable(form.getQuantityAvailable());
+            product.setSoldQuantity(form.getSoldQuantity());
+            product.setPrice(form.getPrice());
+            product.setSalePrice(form.getSalePrice());
+            product.setMRSP(form.getMRSP());
+        }
+
 
         if (form.isHasVariants() && form.getVariants() != null) {
             product.setOptions(form.getOptions());
@@ -160,104 +177,146 @@ public class ProductServicesImpl implements ProductServices {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Cập nhật các trường cơ bản
-        product.setName(form.getName());
-        product.setDescription(form.getDescription());
-        product.setImageURL(product.getImageURL());
-        product.setPrimaryImageURL(product.getPrimaryImageURL());
-        product.setBrandName(form.getBrandName());
-        product.setSellingTypes(form.getSellingTypes());
-
         // Cập nhật danh mục
         List<Category> items = form.getCategories().stream()
-                .map( item -> {
-                    Optional<Category> categoryOptional = categoryServices.findById(item);
-                    if (categoryOptional.isPresent()) {
-                        Category category = categoryOptional.get();
-                        return category;
-                    }
-                    return null;
-                }).toList();
-        product.setCategories(items);
+                .map(item -> categoryServices.findById(item).orElse(null))
+                .filter(Objects::nonNull) // Loại bỏ các category null
+                .collect(Collectors.toList());
 
-        // Cập nhật kích thước
-        ProductDimensions dimensions = new ProductDimensions(form.getDimensions().getId(),
-                form.getDimensions().getWeight(),
-                form.getDimensions().getLength(),
-                form.getDimensions().getHeight(),
-                form.getDimensions().getWidth());
-        dimensionRepository.save(dimensions); // Lưu lại kích thước mới nếu cần
-        product.setDimensions(dimensions);
+        List<Category> collections = form.getCollections().stream()
+                .map(collection -> categoryServices.findById(collection).orElse(null))
+                .filter(Objects::nonNull) // Loại bỏ các category null
+                .collect(Collectors.toList());
 
-        // Cập nhật biến thể sản phẩm và tùy chọn
+        // Cập nhật các trường cơ bản, chỉ cập nhật nếu giá trị mới không phải null
+         product.setName(form.getName());
+         product.setDescription(form.getDescription());
+         product.setImageURL(form.getImageURL());
+         product.setPrimaryImageURL(form.getPrimaryImageURL());
+         product.setBrandName(form.getBrandName());
+         product.setSellingTypes(form.getSellingTypes());
+         product.setCategories(items);
+         product.setCollections(collections);
+
+
+
+        // Cập nhật kích thước sản phẩm nếu có
+        if (form.getDimensions() != null) {
+            ProductDimensions dimensions = new ProductDimensions(
+                    form.getDimensions().getId(),
+                    form.getDimensions().getWeight(),
+                    form.getDimensions().getLength(),
+                    form.getDimensions().getHeight(),
+                    form.getDimensions().getWidth()
+            );
+            dimensions = dimensionRepository.save(dimensions);
+            product.setDimensions(dimensions);
+        }
+
+        if(!form.isHasVariants()){
+            product.setSKU(form.getSKU());
+            product.setQuantityAvailable(form.getQuantityAvailable());
+            product.setSoldQuantity(form.getSoldQuantity());
+            product.setPrice(form.getPrice());
+            product.setSalePrice(form.getSalePrice());
+            product.setMRSP(form.getMRSP());
+        }
+
+
+
         if (Boolean.TRUE.equals(form.isHasVariants()) && form.getVariants() != null) {
+            // Khi chuyển từ false sang true, đảm bảo rằng danh sách biến thể được khởi tạo đúng cách
+            if (!product.isHasVariants()) {
+                product.setVariants(new ArrayList<>());  // Khởi tạo danh sách biến thể mới nếu hasVariants chuyển từ false sang true
+            }
+
             product.setOptions(form.getOptions());
             List<ProductVariants> updatedVariants = new ArrayList<>();
+            List<VariantTypes> availableVariantTypes = new ArrayList<>();
 
+            // Lấy danh sách các VariantTypes từ các category
+            for (Category category : product.getCategories()) {
+                availableVariantTypes.addAll(category.getVariantTypes());
+            }
+
+            // Cập nhật hoặc tạo mới biến thể
             for (ProductVariants variantForm : form.getVariants()) {
-                ProductVariants variant = null;
+                ProductVariants variant;
 
+                // Nếu biến thể đã tồn tại, cập nhật lại
                 if (variantForm.getId() != null) {
-                    // Kiểm tra xem biến thể có tồn tại không
-                    Optional<ProductVariants> existingVariantOptional = productVariantsRepository.findById(variantForm.getId());
-                    if (existingVariantOptional.isPresent()) {
-                        variant = existingVariantOptional.get();
-                        // Cập nhật các trường của biến thể
-                        variant.setRating(variantForm.getRating());
-                        variant.setSKU(variantForm.getSKU());
-                        variant.setQuantityAvailable(variantForm.getQuantityAvailable());
-                        variant.setSoldQuantity(variantForm.getSoldQuantity());
-                        variant.setPrice(variantForm.getPrice());
-                        variant.setSalePrice(variantForm.getSalePrice());
-                        variant.setMRSP(variantForm.getMRSP());
-                        variant.setImageURLs(variantForm.getImageURLs());
+                    variant = productVariantsRepository.findById(variantForm.getId())
+                            .orElseThrow(() -> new RuntimeException("Variant not found"));
 
-                        // Xử lý các tùy chọn biến thể (variantOptions)
-                        if (variantForm.getVariantOptions() != null) {
-                            List<VariantOptions> updatedVariantOptions = new ArrayList<>();
-                            for (VariantOptions optionForm : variantForm.getVariantOptions()) {
-                                VariantOptions option = null;
+                    // Cập nhật các trường nếu có giá trị, tránh cập nhật giá trị null
+                    variant.setRating(variantForm.getRating());
+                    variant.setSKU(variantForm.getSKU());
+                    variant.setQuantityAvailable(variantForm.getQuantityAvailable());
+                    variant.setSoldQuantity(variantForm.getSoldQuantity());
+                    variant.setPrice(variantForm.getPrice());
+                    variant.setSalePrice(variantForm.getSalePrice());
+                     variant.setMRSP(variantForm.getMRSP());
+                    variant.setImageURLs(variantForm.getImageURLs());
 
-                                if (optionForm.getId() != null) {
-                                    // Kiểm tra xem tùy chọn có tồn tại không
-                                    Optional<VariantOptions> existingOptionOptional = variantOptionsRepository.findById(optionForm.getId());
-                                    if (existingOptionOptional.isPresent()) {
-                                        option = existingOptionOptional.get();
-                                        // Cập nhật các trường của tùy chọn
-                                        option.setVariantTypes(optionForm.getVariantTypes());
-                                        option.setValue(optionForm.getValue());
-                                        updatedVariantOptions.add(option);
-                                    }
+                    // Xử lý các VariantOptions
+                    if (variantForm.getVariantOptions() != null) {
+                        List<VariantOptions> updatedVariantOptions = new ArrayList<>();
+
+                        for (VariantOptions optionForm : variantForm.getVariantOptions()) {
+                            VariantOptions option;
+
+                            // Nếu Option đã có ID, cập nhật lại
+                            if (optionForm.getId() != null) {
+                                option = variantOptionsRepository.findById(optionForm.getId())
+                                        .orElseThrow(() -> new RuntimeException("Variant Option not found"));
+                                option.setValue(optionForm.getValue());  // Cập nhật giá trị nếu đã tồn tại
+                            } else {
+                                // Nếu Option chưa có ID, tạo mới
+                                VariantTypes variantType = availableVariantTypes.stream()
+                                        .filter(vt -> vt.getType().equalsIgnoreCase(optionForm.getVariantTypes()))
+                                        .findFirst()
+                                        .orElse(null);
+
+                                if (variantType != null) {
+                                    option = new VariantOptions(variantType.getType(), optionForm.getValue());
+                                    variantOptionsRepository.save(option);  // Lưu mới Option
                                 } else {
-                                    // Tạo mới nếu không có ID
-                                    updatedVariantOptions.add(optionForm);
+                                    throw new RuntimeException("Variant type not found");
                                 }
                             }
-                            // Lưu tất cả các tùy chọn biến thể đã cập nhật
-                            variantOptionsRepository.saveAll(updatedVariantOptions);
-                            variant.setVariantOptions(updatedVariantOptions); // Đặt lại danh sách variantOptions
+
+                            updatedVariantOptions.add(option);
                         }
-                        updatedVariants.add(variant); // Thêm vào danh sách biến thể đã cập nhật
+                        variant.setVariantOptions(updatedVariantOptions);  // Cập nhật danh sách VariantOptions
                     }
                 } else {
-//                    // Nếu biến thể không có ID, coi như tạo mới và thêm vào danh sách
-//                    List<VariantOptions> variantOptionsList = Arrays.asList(
-//                            new VariantOptions(VariantType.COLOR, variantForm.getVariantOptions().get(0).getValue()),
-//                            new VariantOptions(VariantType.RAM, variantForm.getVariantOptions().get(1).getValue()),
-//                            new VariantOptions(VariantType.STORAGE, variantForm.getVariantOptions().get(2).getValue())
-//                    );
-                    ProductVariants newVariant = new ProductVariants();
-                    //newVariant.setVariantOptions(variantOptionsList);
-                    newVariant.setRating(variantForm.getRating());
-                    newVariant.setSKU(variantForm.getSKU());
-                    newVariant.setQuantityAvailable(variantForm.getQuantityAvailable());
-                    newVariant.setSoldQuantity(variantForm.getSoldQuantity());
-                    newVariant.setPrice(variantForm.getPrice());
-                    newVariant.setSalePrice(variantForm.getSalePrice());
-                    newVariant.setMRSP(variantForm.getMRSP());
-                    newVariant.setImageURLs(variantForm.getImageURLs());
-                    updatedVariants.add(newVariant);
+                    // Nếu biến thể chưa tồn tại, tạo mới
+                    variant = new ProductVariants();
+                     variant.setRating(variantForm.getRating());
+                    variant.setSKU(variantForm.getSKU());
+                     variant.setQuantityAvailable(variantForm.getQuantityAvailable());
+                   variant.setSoldQuantity(variantForm.getSoldQuantity());
+                     variant.setPrice(variantForm.getPrice());
+                    variant.setSalePrice(variantForm.getSalePrice());
+                     variant.setMRSP(variantForm.getMRSP());
+                     variant.setImageURLs(variantForm.getImageURLs());
+
+                    // Tạo mới VariantOptions
+                    List<VariantOptions> newVariantOptions = new ArrayList<>();
+                    for (VariantOptions optionForm : variantForm.getVariantOptions()) {
+                        VariantTypes variantType = availableVariantTypes.stream()
+                                .filter(vt -> vt.getType().equalsIgnoreCase(optionForm.getVariantTypes()))
+                                .findFirst()
+                                .orElse(null);
+
+                        if (variantType != null) {
+                            VariantOptions option = new VariantOptions(variantType.getType(), optionForm.getValue());
+                            newVariantOptions.add(variantOptionsRepository.save(option));
+                        }
+                    }
+                    variant.setVariantOptions(newVariantOptions);
                 }
+                updatedVariants.add(variant);
             }
 
             // Lưu tất cả các biến thể sản phẩm đã cập nhật
@@ -271,13 +330,18 @@ public class ProductServicesImpl implements ProductServices {
             product.setVariants(null);
         }
 
-// Cập nhật thời gian chỉnh sửa
+        // Cập nhật specifications
+        if (form.getSpecifications() != null) {
+            product.setSpecifications(form.getSpecifications());
+        }
+
+        // Cập nhật thời gian chỉnh sửa
         product.setUpdatedAt(LocalDateTime.now());
 
-// Lưu lại sản phẩm đã cập nhật
+        // Lưu lại sản phẩm đã cập nhật
         return productRepository.save(product);
-
     }
+
 
 
 

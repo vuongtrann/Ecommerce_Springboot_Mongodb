@@ -1,5 +1,6 @@
 package com.spring.ecommerce.mongodb.persistence.dto;
 
+import com.spring.ecommerce.mongodb.persistence.model.Category;
 import com.spring.ecommerce.mongodb.persistence.model.ProductDimensions;
 import com.spring.ecommerce.mongodb.persistence.model.variants.ProductVariants;
 import lombok.*;
@@ -23,7 +24,12 @@ public class ProductForm {
 
     private String description;
 
-    private Double rating = 0.0;
+    private String SKU;
+    private int quantityAvailable;
+    private int soldQuantity;
+    private double price;
+    private double salePrice;
+    private double MRSP;
 
     private int noOfReviews = 0;
 
@@ -35,7 +41,7 @@ public class ProductForm {
     private boolean hasVariants;
     private List<ProductVariants> variants = new ArrayList<>();
     private Map<String,List<String>> options;
-
+    private List<String> collections;
     //private List<ProductSpecification> specifications = new ArrayList<>();
     private Map<String,String> specifications;
 }
