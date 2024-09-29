@@ -20,8 +20,8 @@ import java.util.Optional;
 public interface CategoryRepository extends MongoRepository<Category, String> {
 
 
-    /** Get all Category */
-    @Aggregation(pipeline = {
+    /** Get all Category    */
+    @Aggregation(pipeline  = {
             " {$match: { isCollection: false, isFeature: false, isActive: true}}",
             "{$project: {_id: 1, name:  1,icon: 1, banner: 1 }}"
     })
