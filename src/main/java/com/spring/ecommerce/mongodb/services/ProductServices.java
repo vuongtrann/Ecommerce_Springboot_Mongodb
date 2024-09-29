@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface ProductServices {
     public Page<ProductProjection> findAll(Pageable pageable);
-
+    public List<Product> findAllPopularProducts(int limit);
     public Product save(Product product);
     //public Product update(Product product);
     public Optional<Product> findById(String id);

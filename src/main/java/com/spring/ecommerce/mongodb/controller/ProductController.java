@@ -47,13 +47,28 @@ public class ProductController {
         return productServices.findAll(pageable);
     }
 
+    @RequestMapping(value = "/popular", method = RequestMethod.GET)
+    public List<Product> findAllPopularProduct(
+            @RequestParam(defaultValue = "5") int limit){
+//        String sortField = sort[0];
+//        Sort.Direction direction = sort[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+
+        return productServices.findAllPopularProducts(limit);
+    }
+
     /**Get product by id*/
     @RequestMapping(value = "/{productId}",method = RequestMethod.GET)
     public ResponseEntity<Product> getProductById(@PathVariable("productId") String productId) {
         if (!productServices.findById(productId).isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }else {
-            return new ResponseEntity<>(productServices.findById(productId).get(), HttpStatus.OK);
+            int viewCount =0;
+            Product product = productServices.findById(productId).get();
+            viewCount = product.getViewCount()+1;
+            product.setViewCount(viewCount);
+            productServices.save(product);
+            return new ResponseEntity<>(product, HttpStatus.OK);
         }
     }
 

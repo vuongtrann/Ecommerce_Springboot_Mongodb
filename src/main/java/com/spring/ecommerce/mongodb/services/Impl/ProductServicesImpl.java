@@ -44,6 +44,12 @@ public class ProductServicesImpl implements ProductServices {
     }
 
     @Override
+    public List<Product> findAllPopularProducts(int limit) {
+        return productRepository.findAllPopularProduct(limit);
+    }
+
+
+    @Override
     public Product save(Product product) {
         return productRepository.save(product);
     }

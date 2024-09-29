@@ -65,8 +65,14 @@ public class Product {
 
     private Map<String,String> specifications;
 
-    @JsonIgnore
+
     private int viewCount;
+
+
+    private int quantitySold;
+
+    @JsonIgnore
+    private int remainingQuantity;
 
     @JsonIgnore
     private LocalDateTime createdAt;

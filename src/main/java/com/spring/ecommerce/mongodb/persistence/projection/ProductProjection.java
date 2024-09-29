@@ -13,6 +13,8 @@ public interface ProductProjection {
     String getBrandName();
     String getSellingTypes();
     List<CategoryProjection> getCategories();
+    int viewCount = 0;
+    int quantitySold =0;
 
 
 }
