@@ -36,16 +36,29 @@ public interface CategoryRepository extends MongoRepository<Category, String> {
     Optional<Category> findByIdCategory(@Param("id") String id);
 
     /** Get TOP  Category */
+//    @Aggregation(pipeline = {
+//            "{$lookup:{from: 'product', localField: '_id', foreignField: 'categories', as:  'product'}}"
+//            ,"{$unwind: '$product'}"
+//            ,"{$group: { _id: '$_id', " +
+//                    "noOfViews: { $sum: {$ifNull:['$product.viewCount' , 0]}}" +
+//                     ", noOfSold: { $sum: {$ifNull:  ['$product.quantitySold',0]} }" +
+//                    ", name: { $first: '$name' }, icon: { $first: '$icon' } } } "
+//            ,"{$project:{ id: '$_id' ,icon: 1, name: 1, noOfViews: '$noOfViews', noOfSold: '$noOfSold' } }"
+//            , "{$sort:  {noOfSold: -1,noOfViews: -1, name: -1} }"
+//            ,"{$limit: ?0}"
+//    })
+
+
     @Aggregation(pipeline = {
-            "{$lookup:{from: 'product', localField: '_id', foreignField: 'categories', as:  'product'}}"
-            ,"{$unwind: '$product'}"
-            ,"{$group: { _id: '$_id', " +
-                    "noOfViews: { $sum: {$ifNull:['$product.viewCount' , 0]}}" +
-                     ", noOfSold: { $sum: {$ifNull:  ['$product.quantitySold',0]} }" +
-                    ", name: { $first: '$name' }, icon: { $first: '$icon' } } } "
-            ,"{$project:{ id: '$_id' ,icon: 1, name: 1, noOfViews: '$noOfViews', noOfSold: '$noOfSold' } }"
-            , "{$sort:  {noOfSold: -1,noOfViews: -1} }"
-            ,"{$limit: ?0}"
+            "{$lookup: {from: 'product', localField: '_id', foreignField: 'categories', as: 'product'}}",
+            "{$unwind: {path: '$product', preserveNullAndEmptyArrays: true}}",
+            "{$group: { _id: '$_id'," +
+                    "noOfViews: { $sum: {$ifNull:['$product.viewCount', 10]} }," +
+                    "noOfSold: { $sum: {$ifNull:['$product.quantitySold', 10]} }," +
+                    "name: { $first: '$name' }, icon: { $first: '$icon' } }}",
+            "{$project: {id: '$_id', icon: 1, name: 1, noOfViews: 1, noOfSold: 1}}",
+            "{$sort: {noOfSold: -1, noOfViews: -1, name: -1}}",
+            "{$limit: ?0}"
     })
     List<Category> findTopCategorie(int limit);
 
