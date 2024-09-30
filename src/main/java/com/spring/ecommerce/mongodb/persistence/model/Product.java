@@ -88,4 +88,28 @@ public class Product {
         this.dimensions = dimensions;
        // this.variants = variants;
     }
+
+//    public String getSKU() {
+//        return SKU;
+//    }
+//
+//    public int getQuantityAvailable() {
+//        return quantityAvailable;
+//    }
+//
+//    public int getSoldQuantity() {
+//        return soldQuantity;
+//    }
+//
+//    public double getPrice() {
+//        return price;
+//    }
+//
+//    public double getSalePrice() {
+//        return salePrice;
+//    }
+//
+//    public double getMRSP() {
+//        return MRSP;
+//    }
 }
