@@ -1,5 +1,6 @@
 package com.spring.ecommerce.mongodb.controller.AuthController;
 
+import com.nimbusds.jose.JOSEException;
 import com.spring.ecommerce.mongodb.persistence.model.Auth.Account;
 import com.spring.ecommerce.mongodb.persistence.model.Auth.Token;
 import com.spring.ecommerce.mongodb.persistence.model.Customer;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/auth/")
@@ -58,6 +61,14 @@ public class AuthenticationController {
 
 
 
+    @RequestMapping(value = "/logout")
+    public ResponseEntity<Void> logout(@RequestBody Token token) throws ParseException, JOSEException {
+        if (token == null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        authenticationService.logout(token);
+        return new ResponseEntity<>( HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/exists", method = RequestMethod.GET)
     public ResponseEntity<Boolean> existsUser(@RequestParam String email){

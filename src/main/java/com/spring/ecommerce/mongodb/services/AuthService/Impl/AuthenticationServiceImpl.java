@@ -6,9 +6,11 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.spring.ecommerce.mongodb.persistence.model.Auth.Account;
+import com.spring.ecommerce.mongodb.persistence.model.Auth.InvalidateToken;
 import com.spring.ecommerce.mongodb.persistence.model.Auth.Token;
 import com.spring.ecommerce.mongodb.persistence.model.Customer;
 import com.spring.ecommerce.mongodb.repository.AuthRepository.AccountRepository;
+import com.spring.ecommerce.mongodb.repository.AuthRepository.InvalidateTokenRepository;
 import com.spring.ecommerce.mongodb.services.AuthService.AuthenticationService;
 import com.spring.ecommerce.mongodb.services.Impl.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -33,6 +36,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private InvalidateTokenRepository invalidateTokenRepository;
 
     @Autowired
     private CustomerServiceImpl customerService;
@@ -53,6 +59,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    public void logout(Token token ) throws JOSEException, ParseException {
+        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token.getToken());
+        Date expiration = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        if ( expiration.before(new Date()) && signedJWT.verify(verifier)   ) {
+            throw new RuntimeException( "Expired token");
+        }
+
+        InvalidateToken invalidateToken  = new InvalidateToken();
+        invalidateToken.setId(signedJWT.getJWTClaimsSet().getJWTID());
+        invalidateToken.setExpiryDate(expiration);
+
+        invalidateTokenRepository.save(invalidateToken);
+
+
+    }
+
+
+
+
+    @Override
     public String generateToken(Customer customer){
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
@@ -62,6 +90,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .issuer(customer.getFullName())
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
+                .jwtID(UUID.randomUUID().toString())
                 .claim("scope" ,buildScope(customer))
                 .build();
 
@@ -85,9 +114,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         SignedJWT signedJWT = SignedJWT.parse(token.getToken());
         Date expirationDate = signedJWT.getJWTClaimsSet().getExpirationTime();
 
+        if (invalidateTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())) {
+            token.setValid(false);
+            token.setExpires(null);
+            token.setToken(null);
+            return token;
+        }
+
         token.setValid(signedJWT.verify(verifier)   && expirationDate.after(new Date()));
         token.setExpires(expirationDate);
-
         return token;
 
 

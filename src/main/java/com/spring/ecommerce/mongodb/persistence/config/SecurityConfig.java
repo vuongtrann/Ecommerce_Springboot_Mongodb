@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer:: disable)
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers( PUBLIC_ENDPOINTS).permitAll()
+                                .requestMatchers( HttpMethod.POST, "/api/auth/token" ).permitAll()
 
                                         // For Category
                                 .requestMatchers(HttpMethod.POST, "/api/v1/category/").hasAuthority("SCOPE_ROLE_ADMIN")
