@@ -28,8 +28,8 @@ public class Category {
     private String name;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private boolean isActive;
-    private boolean isFeature;
+    private Boolean isActive;
+    private Boolean isFeature;
     private boolean isCollection;
     private String icon;
     private Banners banner;
