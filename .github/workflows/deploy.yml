@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'  # Thay đổi phiên bản Java nếu cần
+          distribution: 'temurin'  # Thay đổi phiên bản Java nếu cần
 
       - name: Build project
         run: ./mvnw clean package -DskipTests  # Dùng lệnh build phù hợp với project của bạn
