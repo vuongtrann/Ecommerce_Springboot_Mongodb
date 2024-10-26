@@ -1,0 +1,44 @@
+name: Build and Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main  # Chạy khi có thay đổi trên nhánh main (đổi tên nếu cần)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'  # Thay đổi phiên bản Java nếu cần
+
+      - name: Build project
+        run: ./mvnw clean package -DskipTests  # Dùng lệnh build phù hợp với project của bạn
+
+      - name: Transfer files to VPS
+        env:
+          VPS_IP: ${{ secrets.VPS_IP }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          echo "${VPS_SSH_KEY}" > ssh_key
+          chmod 600 ssh_key
+          scp -o StrictHostKeyChecking=no -i ssh_key target/*.jar ${VPS_USER}@${VPS_IP}:/home/workspace/source1
+
+      - name: Deploy on VPS
+        env:
+          VPS_IP: ${{ secrets.VPS_IP }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh_key ${VPS_USER}@${VPS_IP} << 'EOF'
+            docker stop my_app1 || true
+            docker rm my_app1 || true
+            docker run -d --name my_app1 -p 8080:8080 -v /home/workspace/source1:/app openjdk:17 java -jar /app/Ecommerce_Springboot_Mongodb-0.0.1-SNAPSHOT.jar
+          EOF
